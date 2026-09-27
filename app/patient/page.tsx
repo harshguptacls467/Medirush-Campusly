@@ -30,7 +30,8 @@ import {
   Thermometer,
   Shield,
   Zap,
-  Info
+  Info,
+  Phone
 } from 'lucide-react';
 import { ChemistNode, Order } from '@/lib/store';
 import type { SafetyAuditResult, RankingResult, ThermalSLAResult, SystemHealthCheck, IntegrationStatus } from '@/lib/types';
@@ -144,6 +145,10 @@ export default function PatientApp() {
   const [orderProgress, setOrderProgress] = useState<OrderProgress | null>(null);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(300); // 5 minutes
 
+  // Post-delivery interactive lifecycle states
+  const [deliveryStage, setDeliveryStage] = useState<'DISPATCHED' | 'ARRIVED_DOORSTEP' | 'DELIVERED'>('DISPATCHED');
+  const [deliveryOtp, setDeliveryOtp] = useState<string>('4821');
+
   // Safety, ranking, thermal, fulfillment, and system health state
   const [safetyAudit, setSafetyAudit] = useState<SafetyAuditResult | null>(null);
   const [rankingResults, setRankingResults] = useState<RankingResult[]>([]);
@@ -228,6 +233,7 @@ export default function PatientApp() {
         const payload: FulfillmentData = JSON.parse(e.data);
         setFulfillment(payload);
         setFlowState('ACCEPTED');
+        setDeliveryStage('DISPATCHED');
         playSuccessChime();
         try {
           confetti({
@@ -251,9 +257,16 @@ export default function PatientApp() {
       } else if (type === 'ORDER_ACCEPTED') {
         setFulfillment(payload);
         setFlowState('ACCEPTED');
+        setDeliveryStage('DISPATCHED');
         playSuccessChime();
         try {
           confetti({ particleCount: 90, spread: 75, origin: { y: 0.6 } });
+        } catch (e) {}
+      } else if (type === 'ORDER_DELIVERED') {
+        setDeliveryStage('DELIVERED');
+        playSuccessChime();
+        try {
+          confetti({ particleCount: 130, spread: 90, origin: { y: 0.5 } });
         } catch (e) {}
       } else if (type === 'RESET_ALL') {
         resetLocalState();
@@ -292,6 +305,7 @@ export default function PatientApp() {
           cooperativePlan: data.cooperativePlan,
         });
         setFlowState('ACCEPTED');
+        setDeliveryStage('DISPATCHED');
         playSuccessChime();
       }
     } catch (e) {}
@@ -879,6 +893,16 @@ export default function PatientApp() {
             <div className="w-64 h-2.5 bg-slate-100 rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full animate-[shimmer_1.5s_infinite] w-3/4" />
             </div>
+
+            <button
+              onClick={() => {
+                setFlowState('IDLE');
+                setParseError(null);
+              }}
+              className="text-xs font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-4 py-2 rounded-xl transition cursor-pointer"
+            >
+              ← Cancel / Choose Another File
+            </button>
           </div>
         )}
 
@@ -886,20 +910,34 @@ export default function PatientApp() {
         {parsedData && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
             
-            {/* Stage Title */}
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
-                  Step 2: Review Medicines &amp; Verify Economics
-                </span>
+            {/* Stage Title with Back Button */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                    Step 2: Review Medicines &amp; Verify Economics
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  Prescription Verified &amp; Price Comparison
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
+                  Check active chemical salts and compare standard brand prices with Jan Aushadhi generic equivalents.
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                Prescription Verified &amp; Price Comparison
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                Check active chemical salts and compare standard brand prices with Jan Aushadhi generic equivalents.
-              </p>
+
+              {/* Back Button to Upload Screen */}
+              <button
+                onClick={() => {
+                  setFlowState('IDLE');
+                  setParsedData(null);
+                  setParseError(null);
+                }}
+                className="self-start sm:self-center text-xs font-bold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <span>← Back / Re-Upload</span>
+              </button>
             </div>
 
             {/* Doctor Verification Header */}
@@ -1058,8 +1096,8 @@ export default function PatientApp() {
             ) : (
               <div className="bg-slate-950 text-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/80 shadow-2xl flex flex-col gap-5 animate-in fade-in duration-300">
                 
-                {/* 5-Min Consensus Header */}
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                {/* 5-Min Consensus Header with Back Button */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-3.5">
                     <div className="w-4 h-4 rounded-full bg-emerald-500 animate-ping shrink-0" />
                     <div>
@@ -1077,11 +1115,19 @@ export default function PatientApp() {
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-sm font-mono font-black text-amber-400 bg-amber-950/80 border border-amber-800 px-3.5 py-1.5 rounded-xl block shadow-xs">
-                      ⏱️ {Math.floor(countdownSeconds / 60)}:{(countdownSeconds % 60).toString().padStart(2, '0')}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block mt-0.5 font-medium">Convergence Window</span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setFlowState('PARSED')}
+                      className="text-xs font-bold text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl transition cursor-pointer"
+                    >
+                      ← Cancel / Edit Rx
+                    </button>
+                    <div className="text-right">
+                      <span className="text-sm font-mono font-black text-amber-400 bg-amber-950/80 border border-amber-800 px-3.5 py-1.5 rounded-xl block shadow-xs">
+                        ⏱️ {Math.floor(countdownSeconds / 60)}:{(countdownSeconds % 60).toString().padStart(2, '0')}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block mt-0.5 font-medium">Convergence Window</span>
+                    </div>
                   </div>
                 </div>
 
@@ -1535,62 +1581,187 @@ export default function PatientApp() {
           </div>
         )}
 
-        {/* ═══ 4. Live Fulfillment Screen (Post-Acceptance) ═══ */}
+        {/* ═══ 4. Live Fulfillment & Post-Delivery Lifecycle ═══ */}
         {flowState === 'ACCEPTED' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-2xl flex flex-col gap-6 animate-in zoom-in-95 duration-400">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
-                  Step 4: Active Delivery &amp; Cold-Chain Tracking
-                </span>
+            
+            {/* Header with Navigation & New Order Button */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                    {deliveryStage === 'DELIVERED' ? 'Delivery Completed Successfully' : 'Step 4: Active Delivery & Cold-Chain Tracking'}
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  {deliveryStage === 'DELIVERED' ? '🎉 Order Delivered & Invoiced!' : 'Prescription Order Confirmed!'}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
+                  {deliveryStage === 'DELIVERED' 
+                    ? 'Medicines delivered at doorstep with verified 2°C - 8°C cold seal.' 
+                    : 'Packed with pre-cooled ice gel thermal insulation and assigned to verified delivery partner.'}
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                Prescription Order Confirmed!
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                Your order is verified, packed with 2°C - 8°C ice gel thermal insulation, and assigned to a delivery rider.
-              </p>
+
+              {/* Start New Prescription Button */}
+              <button
+                onClick={handleResetAll}
+                className="self-start sm:self-center text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Start New Order</span>
+              </button>
             </div>
 
-            <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
-                <CheckCircle2 className="w-7 h-7 text-white" />
+            {/* Stage Callout / Banner */}
+            <div className={`p-4 rounded-2xl border flex items-center gap-3.5 ${
+              deliveryStage === 'DELIVERED' 
+                ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' 
+                : deliveryStage === 'ARRIVED_DOORSTEP' 
+                ? 'bg-amber-50 border-amber-300 text-amber-950' 
+                : 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+            }`}>
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
+                deliveryStage === 'DELIVERED' ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white'
+              }`}>
+                {deliveryStage === 'DELIVERED' ? <CheckCircle2 className="w-7 h-7 text-white" /> : <Bike className="w-6 h-6 text-white" />}
               </div>
-              <div>
-                <span className="text-xs font-black text-emerald-800 uppercase tracking-wider font-mono">
-                  Prescription Order Confirmed (#{activeOrderId})
+              <div className="flex-1">
+                <span className="text-xs font-black uppercase tracking-wider font-mono text-emerald-800">
+                  {deliveryStage === 'DELIVERED' ? 'Fulfillment Complete' : `Order In Transit (${activeOrderId})`}
                 </span>
                 <h3 className="text-sm sm:text-base font-extrabold text-slate-900 mt-0.5">
-                  Assigned to {fulfillment?.chemist_name || 'Gupta Medicos & Partner Grid'}
+                  {deliveryStage === 'DELIVERED'
+                    ? 'Prescription Handed Over & Verified'
+                    : `Dispatched from ${fulfillment?.chemist_name || 'Gupta Medicos & Partner Grid'}`}
                 </h3>
               </div>
             </div>
 
-            {/* Delivery Progress Steps */}
-            <div className="grid grid-cols-3 gap-2.5 py-2 border-y border-slate-100 text-center">
-              <div className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100">
-                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shadow-2xs">
-                  ✓
-                </div>
-                <span className="text-xs font-bold text-slate-800">Rx Verified &amp; Invoiced</span>
+            {/* Delivery Progression Stepper */}
+            <div className="grid grid-cols-4 gap-2 py-2 border-y border-slate-100 text-center text-xs">
+              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+                <span className="font-bold text-slate-800 text-[11px]">Rx Verified</span>
               </div>
-              <div className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100">
-                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shadow-2xs">
-                  ✓
-                </div>
-                <span className="text-xs font-bold text-slate-800">Thermal Ice Gel Sealed</span>
+              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+                <span className="font-bold text-slate-800 text-[11px]">Ice Gel Sealed</span>
               </div>
-              <div className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-emerald-100/70 border border-emerald-300">
-                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold animate-pulse shadow-2xs">
-                  🛵
-                </div>
-                <span className="text-xs font-black text-emerald-800">Out for Delivery</span>
+              <div className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border ${
+                deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' 
+                  ? 'bg-emerald-50/70 border-emerald-200' 
+                  : 'bg-emerald-100/80 border-emerald-300 ring-2 ring-emerald-500/20'
+              }`}>
+                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${
+                  deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white animate-pulse'
+                }`}>
+                  {deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' ? '✓' : '🛵'}
+                </span>
+                <span className="font-bold text-slate-800 text-[11px]">Out for Delivery</span>
+              </div>
+              <div className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border ${
+                deliveryStage === 'DELIVERED' 
+                  ? 'bg-emerald-100 border-emerald-300 text-emerald-900 font-black' 
+                  : 'bg-slate-50 border-slate-200 text-slate-400'
+              }`}>
+                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${
+                  deliveryStage === 'DELIVERED' ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-400'
+                }`}>
+                  {deliveryStage === 'DELIVERED' ? '🎉' : '4'}
+                </span>
+                <span className="font-bold text-[11px]">{deliveryStage === 'DELIVERED' ? 'Delivered!' : 'Handover'}</span>
               </div>
             </div>
 
+            {/* Delivery Security OTP & Action Card */}
+            {deliveryStage !== 'DELIVERED' ? (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-base shadow-sm shrink-0">
+                    🔑
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-amber-800 uppercase tracking-wider block">
+                      Secure Delivery Verification OTP
+                    </span>
+                    <span className="text-2xl font-black font-mono text-slate-900 tracking-wider">
+                      {deliveryOtp}
+                    </span>
+                    <p className="text-[11px] text-slate-600 mt-0.5">
+                      Share this 4-digit code with rider only after inspecting the unbroken 2°C - 8°C cold seal.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Simulation button for reviewer */}
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
+                  {deliveryStage === 'DISPATCHED' && (
+                    <button
+                      onClick={() => setDeliveryStage('ARRIVED_DOORSTEP')}
+                      className="bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-800 font-bold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-[0.98]"
+                    >
+                      <span>⚡ Simulate Rider Arrival</span>
+                    </button>
+                  )}
+                  {deliveryStage === 'ARRIVED_DOORSTEP' && (
+                    <button
+                      onClick={() => {
+                        setDeliveryStage('DELIVERED');
+                        playSuccessChime();
+                        try { confetti({ particleCount: 140, spread: 90, origin: { y: 0.5 } }); } catch (e) {}
+                      }}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-[0.98]"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>Verify OTP &amp; Complete Delivery</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-md shrink-0">
+                    ✓
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block font-mono">
+                      Delivery Completed at {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                    <h4 className="text-base font-black text-slate-900">
+                      Cold Chain Temperature Maintained at 4.2°C
+                    </h4>
+                    <p className="text-xs text-slate-600 mt-0.5">
+                      Doctor prescription verified • Jan Aushadhi generic substitution saved ₹{parsedData ? Math.round(parsedData.total_brand_total - parsedData.total_generic_total) : 387}.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    onClick={() => {
+                      if (typeof window !== 'undefined') window.print();
+                    }}
+                    className="flex-1 sm:flex-none bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-bold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                  >
+                    <FileText className="w-4 h-4 text-slate-600" />
+                    <span>Download Invoice (PDF)</span>
+                  </button>
+                  <button
+                    onClick={handleResetAll}
+                    className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                  >
+                    <span>Order Again</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Delivery Agent Card */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex items-center justify-between">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
                 <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
                   <Bike className="w-6 h-6 text-white" />
@@ -1599,14 +1770,22 @@ export default function PatientApp() {
                   <h4 className="text-sm font-black text-slate-900">
                     {fulfillment?.rider || 'Rahul Sharma'}
                   </h4>
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">Hero Splendor (MP-43-E-2101) • Verified Rider</p>
+                  <p className="text-xs text-slate-500 font-mono mt-0.5">Hero Splendor (MP-43-E-2101) • Verified Delivery Partner</p>
                 </div>
               </div>
-              <div className="text-right">
-                <span className="text-xs sm:text-sm font-black text-emerald-700 bg-emerald-100/80 border border-emerald-300 px-3 py-1.5 rounded-xl font-mono block shadow-2xs">
-                  ETA: {fulfillment?.eta_minutes || 19} Mins
-                </span>
-                <span className="text-xs text-slate-500 block mt-1 font-medium">Doorstep Contactless</span>
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <a
+                  href="tel:+919826154321"
+                  className="text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-2xs"
+                >
+                  <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Call Rider</span>
+                </a>
+                <div className="text-right pl-2">
+                  <span className="text-xs sm:text-sm font-black text-emerald-700 bg-emerald-100/80 border border-emerald-300 px-3 py-1.5 rounded-xl font-mono block shadow-2xs">
+                    {deliveryStage === 'DELIVERED' ? 'Delivered' : `ETA: ${fulfillment?.eta_minutes || 19} Mins`}
+                  </span>
+                </div>
               </div>
             </div>
 

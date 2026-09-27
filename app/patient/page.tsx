@@ -600,39 +600,70 @@ export default function PatientApp() {
       </header>
 
       {/* Main Patient Consumer Container */}
-      <main className="flex-1 max-w-2xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5">
-        
-        {/* Step-by-Step Progress Pipeline */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm">
-          <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-2">
-            <span className="uppercase tracking-wider text-slate-500 font-semibold">Prescription Fulfillment Pipeline</span>
-            <span className="font-mono text-emerald-600 bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
-              {flowState === 'IDLE' && 'Step 1 of 4: Prescription Intake'}
-              {flowState === 'PARSING' && 'Step 1 of 4: AI Salt Extraction'}
-              {flowState === 'PARSED' && 'Step 2 of 4: Price & Safety Review'}
-              {flowState === 'BROADCASTING' && 'Step 3 of 4: Cascading Broadcast'}
-              {flowState === 'ACCEPTED' && 'Step 4 of 4: Live Fulfillment'}
-            </span>
+      <main className="flex-1 max-w-3xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-6">
+
+        {/* ═══ Top Master Navigation & Stage Banner ═══ */}
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                  MediRush Patient Workflow
+                </span>
+                <span className="text-[11px] font-mono text-slate-500 font-semibold">
+                  {flowState === 'IDLE' && 'Stage 1 of 4: Prescription Intake'}
+                  {flowState === 'PARSING' && 'Stage 1 of 4: AI Extraction'}
+                  {flowState === 'PARSED' && 'Stage 2 of 4: Review & Confirm'}
+                  {flowState === 'BROADCASTING' && 'Stage 3 of 4: Live Dispatch Cascade'}
+                  {flowState === 'ACCEPTED' && 'Stage 4 of 4: Order Out for Delivery'}
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1">
+                {flowState === 'IDLE' && 'Scan Doctor’s Prescription to Find Nearby Stock'}
+                {flowState === 'PARSING' && 'AI Multimodal Vision Deciphering Prescription...'}
+                {flowState === 'PARSED' && 'Review Generic Substitutes & Confirm Dispatch'}
+                {flowState === 'BROADCASTING' && 'Active Pharmacy Consensus & Distance Cascade'}
+                {flowState === 'ACCEPTED' && 'Order Confirmed — Rider En Route to Doorstep'}
+              </h1>
+            </div>
+
+            <button 
+              onClick={() => {
+                if (typeof window !== 'undefined' && navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition((pos) => {
+                    const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude, isLive: true };
+                    setUserCoords(coords);
+                    if (parsedData) fetchChemistRankings(parsedData, coords);
+                  });
+                }
+              }}
+              className="text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-2 rounded-xl transition cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 self-start sm:self-auto"
+            >
+              <MapPin className="w-4 h-4 text-emerald-600" />
+              <span>{userCoords?.isLive ? 'GPS Locked' : 'Locate My Area'}</span>
+            </button>
           </div>
-          <div className="grid grid-cols-4 gap-2">
+
+          {/* Step Pipeline Navigation Indicator */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {[
-              { num: '1', title: 'Upload Rx', desc: 'Handwriting OCR', active: flowState === 'IDLE' || flowState === 'PARSING', done: flowState === 'PARSED' || flowState === 'BROADCASTING' || flowState === 'ACCEPTED' },
-              { num: '2', title: 'Verify & Save', desc: 'Generic Sub.', active: flowState === 'PARSED', done: flowState === 'BROADCASTING' || flowState === 'ACCEPTED' },
-              { num: '3', title: 'Cascade Ping', desc: '5-Min Window', active: flowState === 'BROADCASTING', done: flowState === 'ACCEPTED' },
-              { num: '4', title: 'Delivery', desc: 'Cold-Chain SLA', active: flowState === 'ACCEPTED', done: false },
+              { num: '1', title: '1. Scan Rx', desc: 'Handwriting OCR', active: flowState === 'IDLE' || flowState === 'PARSING', done: flowState === 'PARSED' || flowState === 'BROADCASTING' || flowState === 'ACCEPTED' },
+              { num: '2', title: '2. Review & Save', desc: 'Jan Aushadhi Sub.', active: flowState === 'PARSED', done: flowState === 'BROADCASTING' || flowState === 'ACCEPTED' },
+              { num: '3', title: '3. Cascade Ping', desc: '5-Min Window', active: flowState === 'BROADCASTING', done: flowState === 'ACCEPTED' },
+              { num: '4', title: '4. Delivery', desc: 'Cold Chain SLA', active: flowState === 'ACCEPTED', done: false },
             ].map((step, idx) => (
               <div 
                 key={idx} 
-                className={`p-2 rounded-xl border transition-all flex flex-col gap-1 ${
+                className={`p-3 rounded-2xl border transition-all flex flex-col gap-1 ${
                   step.active 
-                    ? 'bg-emerald-50/80 border-emerald-300 ring-2 ring-emerald-500/20 shadow-xs' 
+                    ? 'bg-gradient-to-br from-emerald-50 to-teal-50/50 border-emerald-400 ring-2 ring-emerald-500/20 shadow-xs' 
                     : step.done 
                     ? 'bg-slate-50 border-emerald-200 text-slate-700' 
-                    : 'bg-slate-50/60 border-slate-200/70 text-slate-400'
+                    : 'bg-slate-50/50 border-slate-200/70 text-slate-400 opacity-70'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black ${
                     step.done 
                       ? 'bg-emerald-600 text-white' 
                       : step.active 
@@ -641,147 +672,162 @@ export default function PatientApp() {
                   }`}>
                     {step.done ? '✓' : step.num}
                   </span>
-                  {step.active && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />}
+                  {step.active && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />}
                 </div>
                 <div>
-                  <span className={`text-[11px] font-bold block truncate ${step.active ? 'text-slate-900 font-extrabold' : step.done ? 'text-slate-800' : 'text-slate-400'}`}>
+                  <span className={`text-xs font-black block truncate ${step.active ? 'text-slate-900' : step.done ? 'text-slate-800' : 'text-slate-400'}`}>
                     {step.title}
                   </span>
-                  <span className="text-[9px] text-slate-500 block truncate font-medium">{step.desc}</span>
+                  <span className="text-[10px] text-slate-500 block truncate font-medium">{step.desc}</span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Live Delivery Address & Proximity Anchor Card */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200/80 flex items-center justify-center text-emerald-700 shrink-0 shadow-xs">
-              <MapPin className="w-5 h-5" />
+          {/* ═══ "WHAT TO DO NEXT / AB KYA KAREN?" GUIDANCE BOX ═══ */}
+          <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white rounded-2xl p-4 border border-emerald-500/40 shadow-md flex items-start gap-3.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 font-black text-sm">
+              👉
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Patient Delivery Coordinates</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-black text-emerald-300 uppercase tracking-wider text-[11px]">
+                  What To Do Next (मार्गदर्शन / Guidance):
+                </span>
+                <span className="text-[10px] font-mono bg-emerald-950 border border-emerald-700 px-2 py-0.2 rounded text-emerald-200 font-bold">
+                  Step {flowState === 'IDLE' || flowState === 'PARSING' ? '1' : flowState === 'PARSED' ? '2' : flowState === 'BROADCASTING' ? '3' : '4'}
+                </span>
               </div>
-              <span className="text-xs font-bold text-slate-900 block mt-0.5">
-                {userCoords?.isLive 
-                  ? `Live GPS (Lat: ${userCoords.lat.toFixed(4)}, Lng: ${userCoords.lng.toFixed(4)})` 
-                  : 'Civil Lines / Station Road (Local Pharmacy Grid Anchor)'}
-              </span>
-              <p className="text-[10px] text-slate-500">All pharmacy dispatch pings are ranked using real-time Haversine distance.</p>
+              <p className="text-[11px] text-slate-200 mt-1 leading-relaxed font-medium">
+                {flowState === 'IDLE' && (
+                  <span>
+                    <strong>Option A:</strong> Take a photo or upload your doctor&apos;s handwritten slip below. <br/>
+                    <strong>Option B (Fastest for testing):</strong> Click the black <strong>&quot;Load Demo Rx&quot;</strong> button below to instantly populate Insulin &amp; Blood Pressure medicines.
+                  </span>
+                )}
+                {flowState === 'PARSING' && (
+                  <span>
+                    Gemini AI is currently extracting chemical salts, verifying doctor Schedule H registration, and checking 2°C - 8°C cold storage requirements. Please wait 3-5 seconds...
+                  </span>
+                )}
+                {flowState === 'PARSED' && (
+                  <span>
+                    Review your prescribed medicines, generic Jan Aushadhi substitutes, and total savings below. When ready, click the large green <strong>&quot;Broadcast &amp; Order via WhatsApp&quot;</strong> button below to ping nearby pharmacies.
+                  </span>
+                )}
+                {flowState === 'BROADCASTING' && (
+                  <span>
+                    Your order is broadcasting to nearby pharmacies within your delivery radius (Nearest store first). You can watch individual medicines get accepted in real-time below, or click <strong>&quot;⚡ Resolve Best Route Now&quot;</strong> to immediately lock the best combination.
+                  </span>
+                )}
+                {flowState === 'ACCEPTED' && (
+                  <span>
+                    Your order is 100% confirmed and packed! Delivery Rider Rahul Sharma is on his way with your cold-chain ice gel sealed package. Track the ETA and delivery progress below.
+                  </span>
+                )}
+              </p>
             </div>
           </div>
-          <button 
-            onClick={() => {
-              if (typeof window !== 'undefined' && navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                  const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude, isLive: true };
-                  setUserCoords(coords);
-                  if (parsedData) fetchChemistRankings(parsedData, coords);
-                });
-              }
-            }}
-            className="text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-xl transition cursor-pointer shadow-2xs shrink-0 flex items-center gap-1"
-          >
-            <Activity className="w-3.5 h-3.5 text-emerald-600" />
-            <span>{userCoords?.isLive ? 'GPS Locked' : 'Locate Me'}</span>
-          </button>
         </div>
 
-        {/* 1. Home / Prescription Upload Zone */}
+        {/* ═══ 1. Home / Prescription Upload Zone ═══ */}
         {flowState === 'IDLE' && (
-          <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm flex flex-col gap-5 text-center animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full inline-block mb-2">
-                Instant AI Vision Intake
-              </span>
-              <h2 className="text-lg font-black text-slate-900">Upload or Scan Your Prescription</h2>
-              <p className="text-xs text-slate-500 max-w-md mx-auto mt-1">
-                Gemini AI automatically deciphers doctor handwriting, verifies Schedule H compliance, detects cold-chain requirements, and maps Jan Aushadhi generic substitutes.
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                  Step 1: Prescription Intake &amp; Salt OCR
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Upload Doctor&apos;s Prescription Slip
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                Upload a photo or doctor slip. MediRush Vision extracts chemical salts, verifies Schedule H compliance, and maps Jan Aushadhi generic substitutes saving you up to 70%.
               </p>
             </div>
 
+            {/* Big Dropzone */}
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-gradient-to-b from-emerald-50/30 to-teal-50/10 hover:from-emerald-50/60 hover:to-teal-50/30 rounded-2xl p-8 flex flex-col items-center justify-center gap-3.5 transition-all cursor-pointer group shadow-2xs"
+              className="border-3 border-dashed border-emerald-300 hover:border-emerald-500 bg-gradient-to-b from-emerald-50/40 via-teal-50/20 to-white hover:from-emerald-50/70 hover:to-teal-50/40 rounded-3xl p-8 sm:p-12 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group shadow-xs"
             >
-              <div className="w-16 h-16 rounded-2xl bg-white border border-emerald-200 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Upload className="w-8 h-8 text-emerald-600" />
+              <div className="w-20 h-20 rounded-2xl bg-white border border-emerald-200 shadow-md flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Upload className="w-10 h-10 text-emerald-600" />
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900">Tap to Scan or Upload Rx File</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Supports Camera snapshots, JPG, PNG, and PDF doctor slips</p>
+              <div className="text-center">
+                <h3 className="text-base sm:text-lg font-black text-slate-900">Click Here to Scan / Upload Prescription</h3>
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">Supports Camera snapshots, PNG, JPG, and PDF doctor slips</p>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
-                <span className="text-[11px] font-semibold text-emerald-700 bg-white border border-emerald-200 px-3 py-1 rounded-full shadow-2xs flex items-center gap-1">
-                  <Check className="w-3 h-3 text-emerald-600" /> Handwriting OCR
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+                <span className="text-xs font-bold text-emerald-800 bg-white border border-emerald-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-600" /> Handwriting OCR
                 </span>
-                <span className="text-[11px] font-semibold text-sky-700 bg-white border border-sky-200 px-3 py-1 rounded-full shadow-2xs flex items-center gap-1">
-                  <Snowflake className="w-3 h-3 text-sky-600" /> Cold-Chain 2-8°C
+                <span className="text-xs font-bold text-sky-800 bg-white border border-sky-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
+                  <Snowflake className="w-4 h-4 text-sky-600" /> 2°C - 8°C Cold Chain
                 </span>
-                <span className="text-[11px] font-semibold text-indigo-700 bg-white border border-indigo-200 px-3 py-1 rounded-full shadow-2xs flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-indigo-600" /> Schedule H Safe
+                <span className="text-xs font-bold text-indigo-800 bg-white border border-indigo-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600" /> Schedule H Safe
                 </span>
               </div>
             </div>
 
             <div className="relative flex items-center justify-center my-1">
               <div className="border-t border-slate-200 w-full" />
-              <span className="bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider absolute">
-                OR 1-CLICK DEMO FILL
+              <span className="bg-white px-4 text-xs font-black text-slate-400 uppercase tracking-widest absolute">
+                OR 1-CLICK INSTANT DEMO FILL
               </span>
             </div>
 
             {/* 1-Click Demo Launcher */}
-            <div className="p-4 rounded-xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-md">
+            <div className="p-5 sm:p-6 rounded-2xl bg-slate-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg border border-slate-800">
               <div className="text-left">
-                <div className="flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs font-bold text-white">Load Demo Chronic Prescription</span>
-                  <span className="text-[10px] font-mono text-amber-300 bg-amber-950 border border-amber-800 px-1.5 py-0.2 rounded font-bold">Mock Data</span>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
+                  <span className="text-sm sm:text-base font-black text-white">Load Demo Chronic Prescription</span>
+                  <span className="text-[10px] font-mono text-amber-300 bg-amber-950 border border-amber-800 px-2 py-0.5 rounded font-bold">Mock Data</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Includes Lantus Insulin (Cold Chain 2-8°C) + Telma 40 (Generic eligible) for instant testing.
+                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                  Loads a verified chronic prescription with <strong>Lantus Insulin (Cold Storage 2-8°C)</strong> + <strong>Telma 40 (Blood Pressure)</strong> for instant evaluation.
                 </p>
               </div>
               <button
                 onClick={handleLoadDemo}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-emerald-500/20 active:scale-[0.98] shrink-0"
+                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-slate-950 font-black py-3 px-6 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-emerald-500/25 active:scale-[0.98] shrink-0"
               >
                 <span>Load Demo Rx</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
 
             {/* Parse Error Banner */}
             {parseError && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 flex items-start gap-2.5 text-left animate-in fade-in duration-200">
-                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3 text-left animate-in fade-in duration-200">
+                <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-bold text-red-800">Prescription Analysis Failed</p>
-                  <p className="text-[11px] text-red-600 mt-0.5 leading-relaxed">{parseError}</p>
+                  <h4 className="text-sm font-extrabold text-red-900">Prescription Analysis Failed</h4>
+                  <p className="text-xs text-red-700 mt-0.5 leading-relaxed">{parseError}</p>
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Live Interactive Medical Store & Contact Map with GPS */}
+        {/* ═══ Live Interactive Pharmacy Network Map ═══ */}
         {(flowState === 'IDLE' || flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex flex-col gap-3">
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-                  <MapPin className="w-4 h-4" />
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+                  <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-slate-900">Local Verified Pharmacy Grid</h3>
-                  <p className="text-[10px] text-slate-500">Live locations, phone numbers & cold-chain equipment readiness</p>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">Local Verified Pharmacy Grid</h3>
+                  <p className="text-xs text-slate-500">Live locations, phone numbers &amp; cold-chain readiness</p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-mono">
                 4 Active Hubs
               </span>
             </div>
@@ -798,101 +844,117 @@ export default function PatientApp() {
           </div>
         )}
 
-        {/* 2. Real Gemini AI Processing State */}
+        {/* ═══ 2. Real Gemini AI Processing State ═══ */}
         {flowState === 'PARSING' && (
-          <div className="bg-white rounded-2xl p-8 sm:p-10 border border-slate-200/90 shadow-sm flex flex-col items-center justify-center text-center gap-5 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-10 sm:p-14 border border-slate-200/90 shadow-sm flex flex-col items-center justify-center text-center gap-6 animate-in fade-in duration-300">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin flex items-center justify-center" />
-              <Pill className="w-8 h-8 text-emerald-600 absolute inset-0 m-auto animate-pulse" />
+              <div className="w-24 h-24 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin flex items-center justify-center" />
+              <Pill className="w-10 h-10 text-emerald-600 absolute inset-0 m-auto animate-pulse" />
             </div>
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
                 Gemini Vision Multimodal OCR
               </span>
-              <h3 className="text-base font-black text-slate-900 mt-2">Deciphering Medical Prescription...</h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+              <h2 className="text-2xl font-black text-slate-900 mt-2">Deciphering Medical Prescription...</h2>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-md mx-auto leading-relaxed">
                 Extracting active chemical salts, verifying Schedule H regulatory compliance, and cross-matching Jan Aushadhi generic availability.
               </p>
             </div>
             
-            <div className="w-full max-w-xs space-y-2 text-left bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-[11px]">
-              <div className="flex items-center gap-2 text-slate-700">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <div className="w-full max-w-sm space-y-2.5 text-left bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-xs">
+              <div className="flex items-center gap-2.5 text-slate-700 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Reading handwritten dosage instructions</span>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+              <div className="flex items-center gap-2.5 text-slate-700 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse" />
                 <span>Checking 2°C - 8°C thermal cold-chain criteria</span>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                <span>Validating doctor registration & Schedule H seal</span>
+              <div className="flex items-center gap-2.5 text-slate-700 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                <span>Validating doctor registration &amp; Schedule H seal</span>
               </div>
             </div>
 
-            <div className="w-56 h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div className="w-64 h-2.5 bg-slate-100 rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full animate-[shimmer_1.5s_infinite] w-3/4" />
             </div>
           </div>
         )}
 
-        {/* 3. Parsed Prescription Card & Savings Review */}
+        {/* ═══ 3. Parsed Prescription Card & Savings Review ═══ */}
         {parsedData && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col gap-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
             
+            {/* Stage Title */}
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                  Step 2: Review Medicines &amp; Verify Economics
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Prescription Verified &amp; Price Comparison
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                Check active chemical salts and compare standard brand prices with Jan Aushadhi generic equivalents.
+              </p>
+            </div>
+
             {/* Doctor Verification Header */}
-            <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
-                  <ShieldCheck className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+                  <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-extrabold text-slate-900">{parsedData.doctor_reg}</h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5">{parsedData.prescription_date} • Schedule H Verified</p>
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900">{parsedData.doctor_reg}</h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5">{parsedData.prescription_date} • Schedule H Verified Doctor</p>
                 </div>
               </div>
-              <span className="text-[11px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">
+              <span className="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full">
                 ✓ Valid Rx
               </span>
             </div>
 
             {/* Cold Chain Warning Badge */}
             {parsedData.is_cold_chain && (
-              <div className="bg-sky-50/90 border border-sky-200 text-sky-900 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
-                <div className="w-8 h-8 rounded-lg bg-sky-100 border border-sky-300 flex items-center justify-center text-sky-700 shrink-0 mt-0.5">
-                  <Snowflake className="w-4 h-4 animate-pulse" />
+              <div className="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 text-sky-950 rounded-2xl p-4 flex items-start gap-3.5 shadow-2xs">
+                <div className="w-10 h-10 rounded-xl bg-sky-100 border border-sky-300 flex items-center justify-center text-sky-700 shrink-0 mt-0.5">
+                  <Snowflake className="w-5 h-5 animate-pulse" />
                 </div>
                 <div className="text-xs">
-                  <div className="font-extrabold text-sky-950 flex items-center gap-1.5">
+                  <div className="font-black text-sky-950 flex items-center gap-2 text-xs sm:text-sm">
                     <span>❄️ Cold-Chain Transit Protocol Mandatory</span>
-                    <span className="text-[9px] font-mono font-bold bg-sky-200 text-sky-800 px-1.5 py-0.2 rounded">2°C - 8°C</span>
+                    <span className="text-[10px] font-mono font-bold bg-sky-200 text-sky-900 px-2 py-0.5 rounded">2°C - 8°C</span>
                   </div>
-                  <p className="text-[11px] text-sky-800 mt-0.5 font-medium leading-relaxed">
+                  <p className="text-xs text-sky-800 mt-1 font-medium leading-relaxed">
                     {parsedData.cold_chain_reason}
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Dosage Pack Toggle (Full 30-Day Course vs 10-Day Strip Pack) */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 bg-slate-50/80 p-3 rounded-xl border border-slate-200/80">
+            {/* Dosage Pack Toggle */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
               <div>
-                <span className="text-xs font-bold text-slate-900 block">Affordable Strip Dosage:</span>
-                <span className="text-[11px] text-slate-500">Tier-2 loose strip support (Cut blister pack to reduce upfront expenditure)</span>
+                <span className="text-xs sm:text-sm font-bold text-slate-900 block">Affordable Strip Dosage:</span>
+                <span className="text-xs text-slate-500">Tier-2 loose strip support (Cut blister pack to reduce upfront out-of-pocket expenditure)</span>
               </div>
-              <div className="flex bg-white p-1 rounded-lg border border-slate-200 shadow-2xs shrink-0">
+              <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-2xs shrink-0">
                 <button
                   onClick={() => setIsFractional(false)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    !isFractional ? 'bg-emerald-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    !isFractional ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Full 30-Day Course
                 </button>
                 <button
                   onClick={() => setIsFractional(true)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    isFractional ? 'bg-emerald-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    isFractional ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   10-Day Strip Pack
@@ -901,51 +963,51 @@ export default function PatientApp() {
             </div>
 
             {/* Itemized Medicine List & Jan Aushadhi Substitutes */}
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
-                  Prescribed Medicines & Generic Equivalence
+                <h4 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wider">
+                  Prescribed Medicines &amp; Generic Equivalence
                 </h4>
-                <span className="text-[10px] text-slate-400 font-medium">{parsedData.medicines.length} Medicines Identified</span>
+                <span className="text-xs text-slate-500 font-bold font-mono">{parsedData.medicines.length} Medicines Identified</span>
               </div>
 
               {parsedData.medicines.map((med) => (
                 <div 
                   key={med.id}
-                  className="p-4 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-slate-50 transition-colors flex flex-col gap-2.5"
+                  className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 transition-colors flex flex-col gap-3"
                 >
-                  <div className="flex justify-between items-start gap-2">
+                  <div className="flex justify-between items-start gap-3">
                     <div>
-                      <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
+                      <div className="flex items-center gap-2 font-black text-sm text-slate-900">
                         <span>{med.brand_name}</span>
                         {med.is_cold_chain && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.2 bg-sky-100 text-sky-800 border border-sky-200 rounded font-semibold">
+                          <span className="text-[10px] font-mono px-2 py-0.5 bg-sky-100 text-sky-800 border border-sky-200 rounded-md font-bold">
                             ❄️ 2-8°C Cold Chain
                           </span>
                         )}
                       </div>
-                      <div className="text-[11px] text-slate-600 font-mono mt-1">
+                      <div className="text-xs text-slate-600 font-mono mt-1">
                         Active Salt: <strong className="text-indigo-700 font-semibold">{med.chemical_salt}</strong>
                       </div>
-                      <div className="text-[10px] text-slate-500 mt-0.5 font-medium">{med.dosage}</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5 font-medium">{med.dosage}</div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-sm font-black text-emerald-700 font-mono">
+                      <div className="text-base font-black text-emerald-700 font-mono">
                         ₹{isFractional && med.fractional_available ? Math.round(med.generic_price / 3) : med.generic_price}
                       </div>
-                      <div className="text-[10px] text-slate-400 line-through font-mono">
+                      <div className="text-xs text-slate-400 line-through font-mono">
                         ₹{isFractional && med.fractional_available ? Math.round(med.brand_price / 3) : med.brand_price}
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-2.5 border-t border-slate-200/70 flex items-center justify-between text-[11px]">
+                  <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
                     <span className="text-slate-700 flex items-center gap-1.5 font-medium">
-                      <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      Generic Equivalent: <strong className="text-slate-900">{med.generic_substitute}</strong>
+                      <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+                      Generic Equivalent: <strong className="text-slate-900 font-bold">{med.generic_substitute}</strong>
                     </span>
-                    <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px]">
+                    <span className="text-emerald-800 font-black bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md text-xs">
                       Save {med.savings_percent}%
                     </span>
                   </div>
@@ -954,25 +1016,25 @@ export default function PatientApp() {
             </div>
 
             {/* Total Pricing Summary Card */}
-            <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-50/70 to-teal-50/70 border border-emerald-200 flex items-center justify-between">
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border-2 border-emerald-300/80 flex items-center justify-between shadow-xs">
               <div>
-                <span className="text-xs text-slate-600 font-semibold block">Total Estimated Cost (Generic):</span>
-                <span className="text-xs font-black text-emerald-800">
-                  🎉 Save {parsedData.total_savings_percent}% via Jan Aushadhi Equivalents
+                <span className="text-xs sm:text-sm text-slate-600 font-bold block">Total Estimated Cost (Generic):</span>
+                <span className="text-xs sm:text-sm font-black text-emerald-800">
+                  🎉 Save {parsedData.total_savings_percent}% via Jan Aushadhi Substitutes
                 </span>
               </div>
-              <div className="flex items-baseline gap-2 text-right">
-                <span className="text-xs line-through text-slate-400 font-mono">₹{brandCalculatedTotal}</span>
-                <span className="text-2xl font-black text-slate-900 font-mono">₹{calculatedTotal}</span>
+              <div className="flex items-baseline gap-3 text-right">
+                <span className="text-sm line-through text-slate-400 font-mono">₹{brandCalculatedTotal}</span>
+                <span className="text-3xl font-black text-slate-900 font-mono">₹{calculatedTotal}</span>
               </div>
             </div>
 
             {/* Dispatch Error Banner */}
             {dispatchError && flowState === 'PARSED' && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 flex items-start gap-2.5">
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-bold text-red-800">WhatsApp Dispatch Failed</p>
+                  <h4 className="text-xs font-bold text-red-800">WhatsApp Dispatch Failed</h4>
                   <p className="text-[11px] text-red-600 mt-0.5 leading-relaxed">{dispatchError}</p>
                 </div>
               </div>
@@ -980,69 +1042,69 @@ export default function PatientApp() {
 
             {/* Action Trigger Button / Live Decentralized Broadcast State */}
             {flowState === 'PARSED' ? (
-              <div className="flex flex-col gap-2 pt-1">
+              <div className="flex flex-col gap-2 pt-2">
                 <button
                   onClick={handleBroadcastOrder}
                   disabled={isDispatching}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] text-white font-extrabold py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/25 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] text-white font-black py-4 px-6 rounded-2xl text-base flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/30 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Radio className="w-4 h-4 animate-pulse" />
+                  <Radio className="w-5 h-5 animate-pulse" />
                   <span>{isDispatching ? 'Initiating Dispatch Ping...' : `Broadcast & Order via WhatsApp (₹${calculatedTotal})`}</span>
                 </button>
-                <p className="text-[10px] text-slate-400 text-center">
+                <p className="text-xs text-slate-500 text-center font-medium">
                   Dispatches real-time order pings to nearest verified pharmacies within your delivery radius.
                 </p>
               </div>
             ) : (
-              <div className="bg-slate-950 text-white rounded-2xl p-5 sm:p-6 border-2 border-emerald-500/80 shadow-2xl flex flex-col gap-4 animate-in fade-in duration-300">
+              <div className="bg-slate-950 text-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/80 shadow-2xl flex flex-col gap-5 animate-in fade-in duration-300">
                 
                 {/* 5-Min Consensus Header */}
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
+                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-4 h-4 rounded-full bg-emerald-500 animate-ping shrink-0" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono font-extrabold text-emerald-400 uppercase tracking-wider block">
+                        <span className="text-xs font-mono font-black text-emerald-400 uppercase tracking-wider block">
                           Live Network Broadcast Active
                         </span>
-                        <span className="text-[9px] font-mono text-cyan-300 bg-cyan-950/90 border border-cyan-800 px-2 py-0.2 rounded font-bold">
+                        <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/90 border border-cyan-800 px-2 py-0.5 rounded font-bold">
                           Multi-Store Consensus
                         </span>
                       </div>
-                      <h4 className="text-sm font-black text-white mt-0.5">
+                      <h3 className="text-base sm:text-lg font-black text-white mt-0.5">
                         {activeOrderId ? `Order #${activeOrderId}` : 'Emergency Broadcast'}
-                      </h4>
+                      </h3>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-xs font-mono font-black text-amber-400 bg-amber-950/80 border border-amber-800 px-3 py-1 rounded-lg block shadow-2xs">
+                    <span className="text-sm font-mono font-black text-amber-400 bg-amber-950/80 border border-amber-800 px-3.5 py-1.5 rounded-xl block shadow-xs">
                       ⏱️ {Math.floor(countdownSeconds / 60)}:{(countdownSeconds % 60).toString().padStart(2, '0')}
                     </span>
-                    <span className="text-[9px] text-slate-400 block mt-0.5 font-medium">Convergence Window</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5 font-medium">Convergence Window</span>
                   </div>
                 </div>
 
                 {/* Explanation Banner */}
-                <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-xl text-xs space-y-1">
-                  <div className="font-bold text-emerald-300 flex items-center gap-1.5 text-[11px]">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl text-xs space-y-1.5">
+                  <div className="font-black text-emerald-300 flex items-center gap-2 text-xs sm:text-sm">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
                     How Proximity Cascading Works:
                   </div>
-                  <p className="text-[10px] text-slate-300 leading-relaxed">
+                  <p className="text-xs text-slate-300 leading-relaxed">
                     MediRush pings the closest pharmacy first. If a pharmacy only stocks some items, the remaining items cascade to the next closest pharmacy in real-time. Order resolves automatically at <strong>100% coverage</strong> or when timer expires.
                   </p>
                 </div>
 
                 {/* Coverage Progress Bar */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-bold">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs sm:text-sm font-bold">
                     <span className="text-slate-300">Prescription Coverage Progress:</span>
                     <span className={orderProgress?.coveragePercent === 100 ? 'text-emerald-400 font-mono font-black' : 'text-amber-400 font-mono font-black'}>
                       {orderProgress?.coveragePercent || 0}% Secured ({orderProgress?.coveredMedsCount || 0}/{parsedData.medicines.length} items)
                     </span>
                   </div>
-                  <div className="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-700/80">
+                  <div className="w-full bg-slate-900 h-3.5 rounded-full overflow-hidden border border-slate-700/80">
                     <div 
                       className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500 rounded-full"
                       style={{ width: `${orderProgress?.coveragePercent || 0}%` }}
@@ -1051,8 +1113,8 @@ export default function PatientApp() {
                 </div>
 
                 {/* Live Itemized Acceptance Checklist */}
-                <div className="space-y-2 pt-1 border-t border-slate-800">
-                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">
+                <div className="space-y-2.5 pt-2 border-t border-slate-800">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-wider block">
                     Individual Medicine Claim Status:
                   </span>
 
@@ -1064,21 +1126,21 @@ export default function PatientApp() {
                     return (
                       <div 
                         key={medKey}
-                        className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                        className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between transition-all ${
                           isAccepted
                             ? 'bg-emerald-950/50 border-emerald-600 text-emerald-100 shadow-xs'
                             : 'bg-slate-900/70 border-slate-800 text-slate-400'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
-                          <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
+                        <div className="flex items-center gap-3">
+                          <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
                             isAccepted ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400 animate-pulse'
                           }`}>
                             {isAccepted ? '✓' : '⏳'}
                           </span>
                           <div>
-                            <span className="font-bold text-white block">{med.brand_name}</span>
-                            <span className="text-[10px] font-mono text-slate-400">
+                            <span className="font-bold text-white block text-xs sm:text-sm">{med.brand_name}</span>
+                            <span className="text-[11px] font-mono text-slate-400">
                               Salt: {med.chemical_salt}
                             </span>
                           </div>
@@ -1086,11 +1148,11 @@ export default function PatientApp() {
 
                         <div className="text-right shrink-0">
                           {isAccepted ? (
-                            <span className="text-[10px] font-bold text-emerald-300 bg-emerald-950 border border-emerald-700 px-2 py-0.5 rounded block">
+                            <span className="text-xs font-bold text-emerald-300 bg-emerald-950 border border-emerald-700 px-2.5 py-1 rounded-md block">
                               ✓ Stock Confirmed ({coverage.confirmedBy[0]?.split(' ')[0]})
                             </span>
                           ) : (
-                            <span className="text-[10px] font-bold text-amber-400 bg-amber-950/80 border border-amber-800 px-2 py-0.5 rounded block animate-pulse">
+                            <span className="text-xs font-bold text-amber-400 bg-amber-950/80 border border-amber-800 px-2.5 py-1 rounded-md block animate-pulse">
                               Cascading to Chemist Grid...
                             </span>
                           )}
@@ -1101,15 +1163,15 @@ export default function PatientApp() {
                 </div>
 
                 {/* Proximity Distance Cascading Dispatch Ladder */}
-                <div className="space-y-2 pt-2 border-t border-slate-800">
+                <div className="space-y-2.5 pt-2 border-t border-slate-800">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-wider block">
                       Proximity Dispatch Ladder (Nearest First):
                     </span>
-                    <span className="text-[9px] font-mono text-emerald-400 font-bold">⚡ Haversine Ranked</span>
+                    <span className="text-xs font-mono text-emerald-400 font-bold">⚡ Haversine Ranked</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {(orderProgress?.distanceCascadeLadder && orderProgress.distanceCascadeLadder.length > 0
                       ? orderProgress.distanceCascadeLadder
                       : [
@@ -1125,7 +1187,7 @@ export default function PatientApp() {
                       return (
                         <div 
                           key={tIdx} 
-                          className={`p-2.5 rounded-xl border text-[11px] flex items-center justify-between ${
+                          className={`p-3 rounded-2xl border text-xs flex items-center justify-between ${
                             isSecured
                               ? 'bg-emerald-950/50 border-emerald-600 text-emerald-200 ring-1 ring-emerald-500/30'
                               : isEvaluating
@@ -1133,27 +1195,27 @@ export default function PatientApp() {
                               : 'bg-slate-900/50 border-slate-800 text-slate-400'
                           }`}
                         >
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-[10px] text-slate-300 font-bold bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
+                          <div className="flex items-center gap-2.5">
+                            <span className="font-mono text-xs text-slate-300 font-bold bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">
                               #{tIdx + 1}
                             </span>
                             <div>
-                              <span className="font-bold block text-white text-[11px]">
+                              <span className="font-bold block text-white text-xs">
                                 {tier.chemistName.split(' ')[0]} {tier.chemistName.split(' ')[1] || ''}
                               </span>
-                              <span className="text-[10px] font-mono text-slate-400">
+                              <span className="text-[11px] font-mono text-slate-400">
                                 📍 {tier.distanceKm} km away
                               </span>
                             </div>
                           </div>
-                          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
                             isSecured
                               ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
                               : isEvaluating
                               ? 'bg-amber-950 text-amber-300 border border-amber-800'
                               : 'bg-slate-900 text-slate-500 border border-slate-800'
                           }`}>
-                            {isSecured ? `${tier.fulfilledCount} Items Secured` : isEvaluating ? 'Evaluating Stock...' : 'Standby'}
+                            {isSecured ? `${tier.fulfilledCount} Items Secured` : isEvaluating ? 'Evaluating...' : 'Standby'}
                           </span>
                         </div>
                       );
@@ -1162,13 +1224,13 @@ export default function PatientApp() {
                 </div>
 
                 {/* Force Resolve Early Button */}
-                <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2">
-                  <span className="text-[10px] text-slate-400">Lock optimal route immediately without waiting:</span>
+                <div className="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <span className="text-xs text-slate-400">Lock optimal route immediately without waiting:</span>
                   <button
                     onClick={handleForceResolve}
-                    className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs px-3.5 py-2 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-[0.98]"
+                    className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs sm:text-sm px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-[0.98]"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+                    <Sparkles className="w-4 h-4 text-slate-950" />
                     <span>⚡ Resolve Best Route Now</span>
                   </button>
                 </div>
@@ -1179,22 +1241,22 @@ export default function PatientApp() {
 
         {/* ═══ Safety Audit Panel ═══ */}
         {safetyAudit && parsedData && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col gap-3.5">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                   safetyAudit.overallStatus === 'SAFE' ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' :
                   safetyAudit.overallStatus === 'WARNING' ? 'bg-amber-50 border border-amber-200 text-amber-700' :
                   'bg-red-50 border border-red-200 text-red-700'
                 }`}>
-                  <Shield className="w-4 h-4" />
+                  <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">Deterministic Clinical Safety Audit</h4>
-                  <p className="text-[10px] text-slate-500">Rule-based drug interaction engine • No hallucinated clinical advice</p>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">Deterministic Clinical Safety Audit</h3>
+                  <p className="text-xs text-slate-500">Rule-based drug interaction engine • No hallucinated clinical advice</p>
                 </div>
               </div>
-              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                 safetyAudit.overallStatus === 'SAFE' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                 safetyAudit.overallStatus === 'WARNING' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                 'bg-red-100 text-red-800 border border-red-200'
@@ -1204,19 +1266,19 @@ export default function PatientApp() {
             </div>
 
             {safetyAudit.interactions.length > 0 && (
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {safetyAudit.interactions.map((alert, i) => (
-                  <div key={i} className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${
+                  <div key={i} className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
                     alert.severity === 'CRITICAL'
                       ? 'bg-red-50 border-red-200'
                       : 'bg-amber-50 border-amber-200'
                   }`}>
-                    <AlertTriangle className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
+                    <AlertTriangle className={`w-4 h-4 shrink-0 mt-0.5 ${
                       alert.severity === 'CRITICAL' ? 'text-red-500' : 'text-amber-500'
                     }`} />
                     <div>
                       <span className="font-bold text-slate-900">{alert.drugA} + {alert.drugB}</span>
-                      <p className="text-[11px] text-slate-600 mt-0.5">{alert.reason}</p>
+                      <p className="text-xs text-slate-600 mt-0.5">{alert.reason}</p>
                       <p className="text-[10px] text-slate-400 mt-0.5">Source: {alert.source}</p>
                     </div>
                   </div>
@@ -1225,13 +1287,13 @@ export default function PatientApp() {
             )}
 
             {safetyAudit.duplicates.length > 0 && (
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {safetyAudit.duplicates.map((dup, i) => (
-                  <div key={i} className="p-2.5 rounded-lg border bg-amber-50 border-amber-200 text-xs flex items-start gap-2">
-                    <Info className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <div key={i} className="p-3 rounded-xl border bg-amber-50 border-amber-200 text-xs flex items-start gap-2.5">
+                    <Info className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-slate-900">Duplicate: {dup.salt}</span>
-                      <p className="text-[11px] text-slate-600 mt-0.5">{dup.reason}</p>
+                      <p className="text-xs text-slate-600 mt-0.5">{dup.reason}</p>
                     </div>
                   </div>
                 ))}
@@ -1239,41 +1301,41 @@ export default function PatientApp() {
             )}
 
             {safetyAudit.interactions.length === 0 && safetyAudit.duplicates.length === 0 && (
-              <div className="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs flex items-center gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-xs flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 <span className="text-emerald-900 font-medium">No known adverse drug-drug interactions detected across prescribed chemical salts.</span>
               </div>
             )}
 
-            <p className="text-[9px] text-slate-400 leading-relaxed">{safetyAudit.disclaimer}</p>
+            <p className="text-[10px] text-slate-400 leading-relaxed">{safetyAudit.disclaimer}</p>
           </div>
         )}
 
         {/* ═══ Live Fulfillment Intelligence ═══ */}
         {rankingResults.length > 0 && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center">
-                <Activity className="w-4 h-4" />
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center">
+                <Activity className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">Live Fulfillment Intelligence Ranking</h4>
-                <p className="text-[10px] text-slate-500">Weighted scoring (Medicine Match + Distance Decay + Response SLA + Cold-Chain)</p>
+                <h3 className="text-sm sm:text-base font-black text-slate-900">Live Fulfillment Intelligence Ranking</h3>
+                <p className="text-xs text-slate-500">Weighted scoring (Medicine Match + Distance Decay + Response SLA + Cold-Chain)</p>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {rankingResults.slice(0, 4).map((r, i) => (
-                <div key={r.chemistId} className={`p-3 rounded-xl border text-xs flex items-center justify-between ${
+                <div key={r.chemistId} className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between ${
                   i === 0 ? 'bg-emerald-50/60 border-emerald-300 ring-1 ring-emerald-500/20' : 'bg-slate-50 border-slate-200'
                 }`}>
-                  <div className="flex items-center gap-2.5">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                  <div className="flex items-center gap-3">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
                       i === 0 ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'
                     }`}>{i + 1}</span>
                     <div>
-                      <span className="font-bold text-slate-900 block">{r.chemistName}</span>
-                      <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-500 font-medium">
+                      <span className="font-bold text-slate-900 block text-xs sm:text-sm">{r.chemistName}</span>
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 font-medium">
                         <span>Stock: {(r.breakdown.medicineMatch * 100).toFixed(0)}%</span>
                         <span>•</span>
                         <span>Dist: {(r.breakdown.distanceScore * 100).toFixed(0)}%</span>
@@ -1284,7 +1346,7 @@ export default function PatientApp() {
                       </div>
                     </div>
                   </div>
-                  <span className={`font-black font-mono text-sm ${
+                  <span className={`font-black font-mono text-base ${
                     i === 0 ? 'text-emerald-700' : 'text-slate-700'
                   }`}>{r.score}</span>
                 </div>
@@ -1295,22 +1357,22 @@ export default function PatientApp() {
 
         {/* ═══ Multi-Node Pharmacy & Shadow Inventory Fulfillment Plan ═══ */}
         {fulfillmentPlan && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col gap-3">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-700 flex items-center justify-center">
-                  <Database className="w-4 h-4" />
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-700 flex items-center justify-center">
+                  <Database className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">
                     {fulfillmentPlan.planType === 'MULTI_NODE_SPLIT' ? 'Multi-Node Cooperative Fulfillment' : 'Shadow Inventory Stock Match'}
-                  </h4>
-                  <p className="text-[10px] text-slate-500">
+                  </h3>
+                  <p className="text-xs text-slate-500">
                     Weighted Set Cover • {fulfillmentPlan.overallCoverage}% Total Prescription Covered
                   </p>
                 </div>
               </div>
-              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                 fulfillmentPlan.planType === 'SINGLE_NODE'
                   ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                   : fulfillmentPlan.planType === 'MULTI_NODE_SPLIT'
@@ -1321,45 +1383,45 @@ export default function PatientApp() {
               </span>
             </div>
 
-            <p className="text-[11px] text-slate-700 bg-slate-50 border border-slate-200 p-3 rounded-xl leading-relaxed">
+            <p className="text-xs text-slate-700 bg-slate-50 border border-slate-200 p-3.5 rounded-2xl leading-relaxed">
               {fulfillmentPlan.explanation}
             </p>
 
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {fulfillmentPlan.nodes.map((node, idx) => (
-                <div key={node.chemistId} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2 text-xs">
+                <div key={node.chemistId} className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2.5 text-xs">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="font-bold text-slate-900">Node #{idx + 1}: {node.chemistName}</span>
-                      <span className="text-[11px] text-slate-500 block font-medium">📍 {node.area} • {node.distanceKm} km away</span>
+                      <span className="font-black text-slate-900 text-sm">Node #{idx + 1}: {node.chemistName}</span>
+                      <span className="text-xs text-slate-500 block font-medium">📍 {node.area} • {node.distanceKm} km away</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded">
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100/80 border border-emerald-300 px-2.5 py-1 rounded-lg">
                         Score: {node.totalNodeScore}/100
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                       Covered Items from Distributor Invoices:
                     </span>
                     {node.fulfilledMedicines.map((med, mIdx) => (
-                      <div key={mIdx} className="p-2 rounded-lg bg-white border border-slate-200 flex items-center justify-between text-[11px]">
+                      <div key={mIdx} className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-xs">
                         <div>
                           <strong className="text-slate-800">{med.productName}</strong>
                           <span className="text-slate-400 font-mono block text-[10px]">
                             Batch #{med.batchNo} • {med.freshness?.observedText || 'Invoice Recorded'}
                           </span>
                         </div>
-                        <span className="text-[10px] font-mono font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-mono font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded">
                           {med.confidence}% Match
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                  <div className="pt-2.5 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500 font-mono">
                     <span>Coverage: {node.coveragePercent}%</span>
                     <span>Distance: {node.distanceScore}%</span>
                     <span>Freshness: {node.freshnessScore}%</span>
@@ -1373,18 +1435,18 @@ export default function PatientApp() {
 
         {/* ═══ Thermal Delivery Monitor ═══ */}
         {thermalSLA && thermalSLA.requiresColdChain && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col gap-3">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center">
-                  <Thermometer className="w-4 h-4" />
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center">
+                  <Thermometer className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">Passive Thermal Cold-Chain Monitoring</h4>
-                  <p className="text-[10px] text-slate-500">Real-time ambient weather model & Ice gel safety envelope</p>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">Passive Thermal Cold-Chain Monitoring</h3>
+                  <p className="text-xs text-slate-500">Real-time ambient weather model &amp; Ice gel safety envelope</p>
                 </div>
               </div>
-              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                 thermalSLA.thermalStatus === 'WITHIN_ESTIMATED_WINDOW' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                 thermalSLA.thermalStatus === 'APPROACHING_LIMIT' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                 'bg-red-100 text-red-800 border border-red-200'
@@ -1393,59 +1455,59 @@ export default function PatientApp() {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-                <span className="text-[10px] text-slate-500 font-semibold block">Ambient Temp</span>
-                <span className="text-base font-black text-slate-900 font-mono block mt-0.5">
+            <div className="grid grid-cols-3 gap-2.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-center">
+                <span className="text-xs text-slate-500 font-semibold block">Ambient Temp</span>
+                <span className="text-lg font-black text-slate-900 font-mono block mt-0.5">
                   {weatherData?.temperatureCelsius !== null && weatherData?.temperatureCelsius !== undefined
                     ? `${weatherData.temperatureCelsius}°C`
                     : '32°C'}
                 </span>
-                <span className="text-[9px] text-slate-400 block font-medium">
+                <span className="text-[10px] text-slate-400 block font-medium">
                   {weatherData?.source === 'LIVE_API' ? 'Live Weather API' : 'Local City Model'}
                 </span>
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-                <span className="text-[10px] text-slate-500 font-semibold block">Safe Ice Window</span>
-                <span className="text-base font-black text-slate-900 font-mono block mt-0.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-center">
+                <span className="text-xs text-slate-500 font-semibold block">Safe Ice Window</span>
+                <span className="text-lg font-black text-slate-900 font-mono block mt-0.5">
                   {thermalSLA.totalWindowMinutes !== null ? `${thermalSLA.totalWindowMinutes} min` : '45 min'}
                 </span>
-                <span className="text-[9px] text-slate-400 block font-medium">Phase-Change Gel</span>
+                <span className="text-[10px] text-slate-400 block font-medium">Phase-Change Gel</span>
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-                <span className="text-[10px] text-slate-500 font-semibold block">Thermal SLA Margin</span>
-                <span className={`text-base font-black font-mono block mt-0.5 ${
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-center">
+                <span className="text-xs text-slate-500 font-semibold block">Thermal SLA Margin</span>
+                <span className={`text-lg font-black font-mono block mt-0.5 ${
                   (thermalSLA.remainingWindowMinutes ?? 0) > 10 ? 'text-emerald-700' : 'text-amber-700'
                 }`}>
                   {thermalSLA.remainingWindowMinutes !== null ? `${thermalSLA.remainingWindowMinutes} min` : '23 min'}
                 </span>
-                <span className="text-[9px] text-slate-400 block font-medium">ETA: {thermalSLA.estimatedDeliveryMinutes} min</span>
+                <span className="text-[10px] text-slate-400 block font-medium">ETA: {thermalSLA.estimatedDeliveryMinutes} min</span>
               </div>
             </div>
 
-            <p className="text-[9px] text-slate-400 leading-relaxed">{thermalSLA.disclaimer}</p>
+            <p className="text-[10px] text-slate-400 leading-relaxed">{thermalSLA.disclaimer}</p>
           </div>
         )}
 
         {/* ═══ System Intelligence Dashboard ═══ */}
         {systemHealth && (
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-                <Zap className="w-4 h-4" />
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                <Zap className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
                   <span>System Intelligence Infrastructure</span>
                   {systemHealth.demoMode && (
-                    <span className="text-[9px] font-mono bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.2 rounded font-bold">DEMO MODE</span>
+                    <span className="text-[10px] font-mono bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-bold">DEMO MODE</span>
                   )}
-                </h4>
-                <p className="text-[10px] text-slate-500">Runtime health check across all micro-services & APIs</p>
+                </h3>
+                <p className="text-xs text-slate-500">Runtime health check across all micro-services &amp; APIs</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2.5">
               {([
                 { label: 'AI Extraction', key: 'geminiApi' as const, sub: 'Gemini Vision' },
                 { label: 'Safety Validation', key: 'safetyEngine' as const, sub: 'Deterministic Rules' },
@@ -1456,15 +1518,15 @@ export default function PatientApp() {
               ] as { label: string; key: keyof SystemHealthCheck; sub: string }[]).map((item) => {
                 const val = systemHealth[item.key] as IntegrationStatus;
                 return (
-                  <div key={item.key} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${
+                  <div key={item.key} className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                       val === 'LIVE' ? 'bg-emerald-500 shadow-2xs shadow-emerald-500/50' :
                       val === 'CONFIGURED' ? 'bg-emerald-400' :
                       val === 'NOT_CONFIGURED' ? 'bg-slate-300' : 'bg-red-400'
                     }`} />
                     <div>
-                      <span className="text-[11px] font-bold text-slate-800 block leading-tight">{item.label}</span>
-                      <span className="text-[9px] text-slate-400">{item.sub} • {val === 'LIVE' || val === 'CONFIGURED' ? '✓ Active' : '○ Standby'}</span>
+                      <span className="text-xs font-bold text-slate-800 block leading-tight">{item.label}</span>
+                      <span className="text-[10px] text-slate-400">{item.sub} • {val === 'LIVE' || val === 'CONFIGURED' ? '✓ Active' : '○ Standby'}</span>
                     </div>
                   </div>
                 );
@@ -1473,91 +1535,106 @@ export default function PatientApp() {
           </div>
         )}
 
-        {/* 4. Live Fulfillment Screen (Post-Acceptance) */}
+        {/* ═══ 4. Live Fulfillment Screen (Post-Acceptance) ═══ */}
         {flowState === 'ACCEPTED' && (
-          <div className="bg-white rounded-2xl p-6 border-2 border-emerald-500 shadow-xl flex flex-col gap-4 animate-in zoom-in-95 duration-400">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 shadow-xs">
-                <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-2xl flex flex-col gap-6 animate-in zoom-in-95 duration-400">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                  Step 4: Active Delivery &amp; Cold-Chain Tracking
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Prescription Order Confirmed!
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                Your order is verified, packed with 2°C - 8°C ice gel thermal insulation, and assigned to a delivery rider.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                <CheckCircle2 className="w-7 h-7 text-white" />
               </div>
               <div>
-                <span className="text-xs font-black text-emerald-700 uppercase tracking-wider font-mono">
+                <span className="text-xs font-black text-emerald-800 uppercase tracking-wider font-mono">
                   Prescription Order Confirmed (#{activeOrderId})
                 </span>
-                <h3 className="text-base font-extrabold text-slate-900 mt-0.5">
+                <h3 className="text-sm sm:text-base font-extrabold text-slate-900 mt-0.5">
                   Assigned to {fulfillment?.chemist_name || 'Gupta Medicos & Partner Grid'}
                 </h3>
               </div>
             </div>
 
             {/* Delivery Progress Steps */}
-            <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 text-center">
-              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-50/50 border border-emerald-100">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">
+            <div className="grid grid-cols-3 gap-2.5 py-2 border-y border-slate-100 text-center">
+              <div className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100">
+                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shadow-2xs">
                   ✓
                 </div>
-                <span className="text-[10px] font-bold text-slate-800">Rx Verified & Invoiced</span>
+                <span className="text-xs font-bold text-slate-800">Rx Verified &amp; Invoiced</span>
               </div>
-              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-50/50 border border-emerald-100">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">
+              <div className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100">
+                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shadow-2xs">
                   ✓
                 </div>
-                <span className="text-[10px] font-bold text-slate-800">Thermal Ice Gel Sealed</span>
+                <span className="text-xs font-bold text-slate-800">Thermal Ice Gel Sealed</span>
               </div>
-              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-100/60 border border-emerald-300">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold animate-pulse shadow-2xs">
+              <div className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-emerald-100/70 border border-emerald-300">
+                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold animate-pulse shadow-2xs">
                   🛵
                 </div>
-                <span className="text-[10px] font-black text-emerald-800">Out for Delivery</span>
+                <span className="text-xs font-black text-emerald-800">Out for Delivery</span>
               </div>
             </div>
 
             {/* Delivery Agent Card */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
                   <Bike className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">
+                  <h4 className="text-sm font-black text-slate-900">
                     {fulfillment?.rider || 'Rahul Sharma'}
                   </h4>
-                  <p className="text-[11px] text-slate-500 font-mono mt-0.5">Hero Splendor (MP-43-E-2101) • Verified Rider</p>
+                  <p className="text-xs text-slate-500 font-mono mt-0.5">Hero Splendor (MP-43-E-2101) • Verified Rider</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-xs font-black text-emerald-700 bg-emerald-100/70 border border-emerald-300 px-2.5 py-1 rounded-lg font-mono block shadow-2xs">
+                <span className="text-xs sm:text-sm font-black text-emerald-700 bg-emerald-100/80 border border-emerald-300 px-3 py-1.5 rounded-xl font-mono block shadow-2xs">
                   ETA: {fulfillment?.eta_minutes || 19} Mins
                 </span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">Doorstep Contactless</span>
+                <span className="text-xs text-slate-500 block mt-1 font-medium">Doorstep Contactless</span>
               </div>
             </div>
 
             {/* Cooperative Multi-Node Fulfillment Plan (if split order) */}
             {fulfillment?.cooperativePlan && fulfillment.cooperativePlan.nodes.length > 1 && (
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col gap-2.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-900 flex items-center gap-1.5">
+                  <span className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Database className="w-4 h-4 text-cyan-600" />
                     Cooperative Multi-Pharmacy Split ({fulfillment.cooperativePlan.nodes.length} Nodes)
                   </span>
-                  <span className="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded border border-emerald-300">
+                  <span className="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-lg border border-emerald-300">
                     {fulfillment.cooperativePlan.overallCoverage}% Covered
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                   {fulfillment.cooperativePlan.nodes.map((node, idx) => (
-                    <div key={node.chemistId} className="bg-white border border-slate-200 p-2.5 rounded-lg text-xs flex flex-col gap-1.5">
+                    <div key={node.chemistId} className="bg-white border border-slate-200 p-3 rounded-xl text-xs flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <strong className="text-slate-800">Node #{idx + 1}: {node.chemistName}</strong>
-                        <span className="text-[10px] text-slate-500 font-mono">📍 {node.distanceKm} km</span>
+                        <span className="text-xs text-slate-500 font-mono">📍 {node.distanceKm} km</span>
                       </div>
-                      <div className="space-y-0.5 bg-slate-50 p-1.5 rounded border border-slate-100 text-[11px]">
+                      <div className="space-y-1 bg-slate-50 p-2 rounded-lg border border-slate-100 text-xs">
                         {node.fulfilledMedicines.map((m, mIdx) => (
                           <div key={mIdx} className="flex justify-between text-slate-700">
                             <span>✓ {m.medicineName}</span>
-                            <span className="text-[10px] text-slate-400 font-mono">#{m.batchNo}</span>
+                            <span className="text-xs text-slate-400 font-mono">#{m.batchNo}</span>
                           </div>
                         ))}
                       </div>
@@ -1565,7 +1642,7 @@ export default function PatientApp() {
                   ))}
                 </div>
 
-                <div className="text-[10px] text-slate-500 flex justify-between font-mono pt-1 border-t border-slate-200/60">
+                <div className="text-xs text-slate-500 flex justify-between font-mono pt-2 border-t border-slate-200">
                   <span>Combined Distance: {fulfillment.cooperativePlan.totalEstimatedDistanceKm} km</span>
                   <span>Estimated Total ETA: {fulfillment.cooperativePlan.estimatedDeliveryEtaMinutes} Mins</span>
                 </div>
@@ -1573,18 +1650,18 @@ export default function PatientApp() {
             )}
 
             {/* Thermal Seal Verification Badge */}
-            <div className="bg-sky-50 border border-sky-200 text-sky-900 rounded-xl p-3.5 flex items-center gap-3">
-              <ThermometerSnowflake className="w-5 h-5 text-sky-600 shrink-0 animate-spin" style={{ animationDuration: '6s' }} />
+            <div className="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 text-sky-950 rounded-2xl p-4 flex items-center gap-3.5">
+              <ThermometerSnowflake className="w-6 h-6 text-sky-600 shrink-0 animate-spin" style={{ animationDuration: '6s' }} />
               <div className="text-xs">
-                <span className="font-bold block">Thermal Seal Active (2°C - 8°C Monitored)</span>
-                <span className="text-[11px] text-sky-700">Insulin and biologics secured with pre-cooled ice gel thermal pouch.</span>
+                <span className="font-black block text-xs sm:text-sm">Thermal Seal Active (2°C - 8°C Monitored)</span>
+                <span className="text-xs text-sky-800 mt-0.5 block font-medium">Insulin and biologics secured with pre-cooled ice gel thermal pouch.</span>
               </div>
             </div>
 
             {/* Summary Items */}
-            <div className="border-t border-slate-200 pt-3.5 flex justify-between items-center text-xs">
-              <span className="text-slate-500 font-medium">Total Payable at Delivery:</span>
-              <span className="text-xl font-black text-slate-900 font-mono">
+            <div className="border-t border-slate-200 pt-4 flex justify-between items-center text-xs sm:text-sm">
+              <span className="text-slate-500 font-bold">Total Payable at Delivery:</span>
+              <span className="text-2xl font-black text-slate-900 font-mono">
                 ₹{calculatedTotal} (Cash / UPI on Delivery)
               </span>
             </div>

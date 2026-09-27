@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# MediRush persisted order store (contains real order data)
+.medirush-orders.json
 
 # vercel
 .vercel

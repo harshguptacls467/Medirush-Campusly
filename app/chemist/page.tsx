@@ -657,6 +657,55 @@ export default function ChemistPortal() {
     } catch (e) {}
   };
 
+  // Simulate Partner Pharmacy (e.g. Jan Aushadhi) Accepting Remaining Items (For Live Presentation/Demo)
+  const handleSimulatePartnerAcceptance = async (order: Order, targetChemistId: string = 'chem-3') => {
+    try {
+      const targetChemist = CHEMIST_REGISTRY.find((c) => c.id === targetChemistId) || CHEMIST_REGISTRY[1];
+      const unfulfilledMeds = order.medicines.filter((m) => {
+        const key = m.id || m.brand_name;
+        const alreadyClaimed = (order.chemist_responses || []).some((r) => r.confirmedMedicineIds.includes(key));
+        return !alreadyClaimed;
+      });
+
+      const confirmedIds = unfulfilledMeds.map((m) => m.id || m.brand_name);
+
+      const res = await fetch('/api/chemist-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order.id,
+          action: 'CONFIRM_STOCK',
+          chemistId: targetChemist.id,
+          chemistName: targetChemist.name,
+          confirmedMedicineIds: confirmedIds,
+          medicines: order.medicines,
+        }),
+      });
+
+      const resData = await res.json();
+      playSuccessChime();
+      try {
+        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+      } catch (e) {}
+
+      if (resData.status === 'ACCEPTED') {
+        setIncomingOrders((prev) => prev.filter((o) => o.id !== order.id));
+        setAcceptedOrders((prev) => [
+          {
+            ...order,
+            status: 'ACCEPTED',
+            assigned_chemist: resData.order?.assigned_chemist || 'Gupta Medicos',
+            assigned_rider: 'Rahul Sharma (Hero Splendor MP-43-E-2101)',
+            eta_minutes: 19,
+          },
+          ...prev,
+        ]);
+      }
+    } catch (e) {
+      console.error('Simulate partner acceptance error', e);
+    }
+  };
+
   // Invoice File Upload Handler
   const handleInvoiceFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1247,6 +1296,96 @@ export default function ChemistPortal() {
                           </div>
                         </div>
                       )}
+
+                      {/* ═══ LIVE MULTI-STORE DISPATCH PING & CASCADING MATRIX ═══ */}
+                      <div className="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 flex flex-col gap-2.5">
+                        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+                            <span className="text-xs font-bold text-white">Multi-Chemist Proximity Cascading Network (Live Pings)</span>
+                          </div>
+                          <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/80 border border-cyan-800 px-2 py-0.5 rounded font-bold">
+                            {order.status === 'PARTIALLY_ACCEPTED' ? '⚡ Cascaded to Partner Node' : '📡 Broadcasting Live'}
+                          </span>
+                        </div>
+
+                        <p className="text-[11px] text-slate-300">
+                          MediRush pings nearby pharmacies in sequential distance order. When one store confirms partial medicines, the remaining unfulfilled medicines immediately cascade to the next closest pharmacy:
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {CHEMIST_REGISTRY.slice(0, 4).map((chemist, cIdx) => {
+                            const resp = (order.chemist_responses || []).find((r) => r.chemistId === chemist.id);
+                            const isCurrentTerminal = chemist.id === activeChemistId;
+                            const isConfirmed = resp && resp.confirmedMedicineIds.length > 0;
+                            const isEvaluating = !resp && order.status === 'PARTIALLY_ACCEPTED' && cIdx === (order.chemist_responses?.length || 1);
+
+                            return (
+                              <div 
+                                key={chemist.id} 
+                                className={`p-2.5 rounded-xl border text-xs flex flex-col gap-1.5 transition ${
+                                  isConfirmed 
+                                    ? 'bg-emerald-950/50 border-emerald-600/80 text-emerald-200 ring-1 ring-emerald-500/20'
+                                    : isEvaluating
+                                    ? 'bg-amber-950/60 border-amber-500 text-amber-200 ring-2 ring-amber-500/40 animate-pulse'
+                                    : isCurrentTerminal
+                                    ? 'bg-slate-900 border-slate-600 text-slate-200'
+                                    : 'bg-slate-950/60 border-slate-800 text-slate-400 opacity-75'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-1.5 font-bold">
+                                    <span className="font-mono text-[10px] bg-slate-900 px-1.5 py-0.5 rounded text-slate-400 border border-slate-800">
+                                      #{cIdx + 1}
+                                    </span>
+                                    <span className="text-white text-xs">{chemist.name}</span>
+                                  </div>
+                                  <span className="text-[10px] font-mono text-slate-400">📍 {chemist.distance_km} km</span>
+                                </div>
+
+                                <div className="flex items-center justify-between text-[11px] gap-2 flex-wrap">
+                                  <span>
+                                    {isConfirmed ? (
+                                      <strong className="text-emerald-400">✓ {resp.confirmedMedicineIds.length} Meds Dispatched</strong>
+                                    ) : isEvaluating ? (
+                                      <strong className="text-amber-300 flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" /> Request Received! Evaluating
+                                      </strong>
+                                    ) : (
+                                      <span className="text-slate-500">Standby in Distance Queue</span>
+                                    )}
+                                  </span>
+
+                                  {/* Quick Demo Switch or 1-Tap Simulation Button */}
+                                  {!isConfirmed && (
+                                    <div className="flex items-center gap-1">
+                                      {!isCurrentTerminal && (
+                                        <button
+                                          onClick={() => {
+                                            setActiveChemistId(chemist.id);
+                                            fetchInventory(chemist.id);
+                                          }}
+                                          className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[10px] font-bold border border-slate-700 transition cursor-pointer"
+                                          title="Switch to this store's terminal"
+                                        >
+                                          Switch Node
+                                        </button>
+                                      )}
+                                      <button
+                                        onClick={() => handleSimulatePartnerAcceptance(order, chemist.id)}
+                                        className="px-2 py-0.5 rounded bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black transition cursor-pointer shadow"
+                                        title="Simulate this store accepting remaining medicines"
+                                      >
+                                        ⚡ Accept as {chemist.name.split(' ')[0]}
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
 
                       {/* Interactive Prescribed Medicine Basket */}
                       <div className="space-y-2">

@@ -864,9 +864,14 @@ export default function PatientApp() {
                   <div className="flex items-center gap-2.5">
                     <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping shrink-0" />
                     <div>
-                      <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider block">
-                        Live Network Broadcast & Bidding
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider block">
+                          Live Network Broadcast & Bidding
+                        </span>
+                        <span className="text-[9px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-800 px-1.5 py-0.2 rounded font-bold">
+                          Live Presentation
+                        </span>
+                      </div>
                       <h4 className="text-sm font-black text-white">
                         {activeOrderId ? `Order #${activeOrderId}` : 'Emergency Broadcast'}
                       </h4>

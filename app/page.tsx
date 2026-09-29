@@ -1,55 +1,25 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { 
-  Search, 
-  Clock, 
-  Truck, 
-  FileText, 
-  HeartPulse, 
-  Activity, 
-  ChevronRight, 
   Zap, 
   Pill, 
-  Stethoscope, 
-  MapPin, 
-  Map, 
-  PhoneCall, 
-  ShieldCheck, 
   ArrowRight, 
-  AlertTriangle,
-  Leaf,
-  Bell,
-  CheckCircle2,
-  Shield,
-  Sparkles,
-  Bike,
-  Store,
-  Snowflake,
-  Wifi,
-  WifiOff,
-  Layers,
-  Database,
-  Cpu,
-  RefreshCw,
-  Terminal,
-  Radio,
-  Sliders,
-  DollarSign,
-  TrendingDown,
-  Timer,
-  Check,
-  Smartphone,
-  ScanLine,
-  HelpCircle,
-  Thermometer,
-  Boxes,
-  Compass,
+  CheckCircle2, 
+  Radio, 
+  Check, 
   CheckCircle,
-  Share2
+  Wifi, 
+  WifiOff, 
+  Layers,
+  Sparkles,
+  Snowflake,
+  ShieldCheck,
+  Activity,
+  FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -175,12 +145,17 @@ export default function LandingPage() {
       <Navbar />
 
       {/* ─── 1. HERO SECTION ─────────────────────────────────────────────────── */}
-      <section className="relative min-h-[92vh] flex items-center pt-28 pb-20 bg-gradient-to-br from-[#1565C0] via-[#0D47A1] to-slate-950 overflow-hidden text-white">
-        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-[-15%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <section className="relative min-h-[92vh] flex items-center pt-32 pb-24 bg-gradient-to-br from-[#1565C0] via-[#0D47A1] to-slate-950 overflow-hidden text-white">
+        <div className="absolute top-[-10%] right-[-10%] w-[650px] h-[650px] bg-blue-400/20 rounded-full blur-[130px] pointer-events-none"></div>
+        <div className="absolute bottom-[-15%] left-[-10%] w-[550px] h-[550px] bg-indigo-500/20 rounded-full blur-[110px] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="text-center max-w-4xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-4xl mx-auto"
+          >
             
             <div className="inline-flex items-center bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-black px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider shadow-sm">
               <Zap size={14} className="mr-1.5 text-yellow-300 animate-bounce" />
@@ -201,7 +176,7 @@ export default function LandingPage() {
             {/* Main Action CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/patient" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto py-4 px-8 text-base bg-white text-[#0D47A1] hover:bg-blue-50 transition-all duration-300 shadow-2xl shadow-blue-950/50 rounded-2xl font-black flex items-center justify-center gap-2 group cursor-pointer hover:scale-[1.02]">
+                <button className="w-full sm:w-auto py-4 px-8 text-base bg-white text-[#0D47A1] hover:bg-blue-50 transition-all duration-200 shadow-2xl shadow-blue-950/50 rounded-2xl font-black flex items-center justify-center gap-2 group cursor-pointer hover:scale-[1.02] active:scale-[0.98]">
                   <Pill size={18} className="text-blue-600" />
                   Scan Prescription Live
                   <ArrowRight className="ml-1 group-hover:translate-x-1.5 transition-transform" size={18}/>
@@ -209,7 +184,7 @@ export default function LandingPage() {
               </Link>
 
               <a href="#set-cover" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto py-4 px-7 text-base bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-2xl shadow-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer">
+                <button className="w-full sm:w-auto py-4 px-7 text-base bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-2xl shadow-lg font-bold flex items-center justify-center gap-2 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]">
                   <Layers size={18} className="text-blue-300" />
                   Explore Set Cover Solver
                 </button>
@@ -232,7 +207,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -240,7 +215,7 @@ export default function LandingPage() {
       <section className="py-16 bg-[#F5F9FF] relative z-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-xl space-y-6 -mt-16 relative z-10">
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-xl space-y-6 -mt-20 relative z-10">
             
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pb-4 border-b border-slate-100">
               <div>
@@ -746,17 +721,17 @@ export default function LandingPage() {
 
           <div className="flex flex-wrap justify-center gap-4 pt-2">
             <Link href="/patient">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-black text-sm px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/20 cursor-pointer transition-transform hover:scale-105">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-black text-sm px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/20 cursor-pointer transition-transform hover:scale-105 active:scale-95">
                 Launch Patient Web App →
               </button>
             </Link>
             <Link href="/chemist">
-              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer">
+              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer transition-transform hover:scale-105 active:scale-95">
                 Chemist Merchant Terminal
               </button>
             </Link>
             <Link href="/rider">
-              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer">
+              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer transition-transform hover:scale-105 active:scale-95">
                 Rider Delivery Portal
               </button>
             </Link>

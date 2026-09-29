@@ -32,9 +32,15 @@ export default function Footer() {
             <h4 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">Patient Services</h4>
             <ul className="space-y-2.5 text-sm text-slate-400 font-medium">
               <li>
+                <Link href="/home" className="hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                  <Pill size={14} className="text-blue-400" />
+                  Shop Medicines & Discounts
+                </Link>
+              </li>
+              <li>
                 <Link href="/patient" className="hover:text-blue-400 transition-colors flex items-center gap-1.5">
                   <Pill size={14} className="text-blue-500" />
-                  Order Medicine (Live Dispatch)
+                  Scan Prescription (Live Dispatch)
                 </Link>
               </li>
               <li>

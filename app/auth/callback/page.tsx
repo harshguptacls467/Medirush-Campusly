@@ -26,7 +26,7 @@ export default function AuthCallbackPage() {
           if (role === 'pharmacy') {
             router.push('/chemist');
           } else {
-            router.push('/patient');
+            router.push('/home');
           }
         } else {
           // If no session found yet, wait for hash exchange
@@ -37,7 +37,7 @@ export default function AuthCallbackPage() {
               if (role === 'pharmacy') {
                 router.push('/chemist');
               } else {
-                router.push('/patient');
+                router.push('/home');
               }
             }
           });

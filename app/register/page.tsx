@@ -85,7 +85,7 @@ export default function RegisterPage() {
       }
       router.push('/chemist');
     } else {
-      router.push('/patient');
+      router.push('/home');
     }
   };
 

@@ -44,7 +44,7 @@ export default function LoginPage() {
   // Redirect user based on their role if already logged in
   const handleRoleRedirect = async (sessionUser: any) => {
     if (!sessionUser) {
-      router.push('/patient');
+      router.push('/home');
       return;
     }
 
@@ -64,11 +64,11 @@ export default function LoginPage() {
       } else if (role === 'rider') {
         router.push('/rider');
       } else {
-        router.push('/patient');
+        router.push('/home');
       }
     } catch (err) {
       console.error('Error during role redirect:', err);
-      router.push('/patient');
+      router.push('/home');
     }
   };
   

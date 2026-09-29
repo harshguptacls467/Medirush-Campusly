@@ -92,14 +92,16 @@ export default function Navbar() {
           {/* Center Links */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             <Link
-              href="/"
+              href="/home"
               className={cn(
-                "px-3.5 py-2 rounded-xl text-xs font-bold transition-colors",
-                pathname === '/' ? "text-blue-700 font-extrabold" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                "px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5",
+                pathname === '/home' ? "bg-blue-50 text-blue-700 font-extrabold" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               )}
             >
-              Home
+              <Pill size={13} className="text-blue-600" />
+              Shop Medicines
             </Link>
+
 
             <a
               href="/#set-cover"
@@ -329,11 +331,18 @@ export default function Navbar() {
               {/* Mobile Primary Actions */}
               <div className="space-y-2 mb-6">
                 <Link
+                  href="/home"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full bg-slate-900 text-white font-black py-3 rounded-xl shadow-md text-sm"
+                >
+                  <Pill size={16} className="text-blue-400" /> Shop Medicines & Discounts
+                </Link>
+                <Link
                   href="/patient"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white font-black py-3 rounded-xl shadow-md text-sm"
                 >
-                  <Pill size={16} /> Order Medicine
+                  <Pill size={16} /> Scan & Order Prescription
                 </Link>
                 <Link
                   href="/emergency"

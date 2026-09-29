@@ -312,7 +312,7 @@ export default function LoginPage() {
         };
         localStorage.setItem('demo_user', JSON.stringify(sandboxUser));
         localStorage.removeItem('sandbox_active');
-        router.push('/patient');
+        router.push('/home');
         return;
       } else {
         setError('Invalid sandbox verification code. Hint: Use 123456');
@@ -325,7 +325,7 @@ export default function LoginPage() {
       const data = await verifyPhoneOtp(formData.phone, otpToken);
       if (data.session) {
         localStorage.removeItem('demo_user');
-        router.push('/patient');
+        router.push('/home');
       }
     } catch (err: any) {
       setError(err.message || 'Invalid or expired OTP. Please try again.');
@@ -708,7 +708,7 @@ export default function LoginPage() {
                   className="w-full py-3 text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 flex items-center justify-center gap-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all" 
                   onClick={() => {
                     loginAsDemo();
-                    router.push('/patient');
+                    router.push('/home');
                   }}
                 >
                   <Sparkles size={13} className="text-blue-600" /> Demo Patient

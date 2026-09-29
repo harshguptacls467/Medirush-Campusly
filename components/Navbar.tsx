@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Activity, 
   Pill, 
@@ -18,16 +19,21 @@ import {
   Store, 
   Bike,
   Sparkles,
-  Layers
+  Layers,
+  User,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { user, userProfile, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -35,11 +41,14 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close dropdown on click outside
+  // Close dropdowns on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setToolsDropdownOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -81,7 +90,7 @@ export default function Navbar() {
           </Link>
 
           {/* Center Links */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             <Link
               href="/"
               className={cn(
@@ -93,11 +102,11 @@ export default function Navbar() {
             </Link>
 
             <a
-              href="/#technology"
+              href="/#set-cover"
               className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors flex items-center gap-1.5"
             >
               <Layers size={13} className="text-blue-600" />
-              Technology & SLA
+              Solver
             </a>
 
             {/* Health Tools Dropdown Menu */}
@@ -175,8 +184,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Right Action Callouts */}
-          <div className="hidden sm:flex items-center space-x-3">
+          {/* Right Action Callouts & Auth */}
+          <div className="hidden sm:flex items-center space-x-2.5">
             <Link
               href="/patient"
               className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md shadow-blue-500/20 flex items-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
@@ -187,11 +196,64 @@ export default function Navbar() {
 
             <Link
               href="/emergency"
-              className="bg-red-600 hover:bg-red-700 text-white text-xs font-black px-3.5 py-2.5 rounded-xl shadow-md shadow-red-500/30 flex items-center gap-1.5 animate-pulse transition-all cursor-pointer"
+              className="bg-red-600 hover:bg-red-700 text-white text-xs font-black px-3 py-2.5 rounded-xl shadow-md shadow-red-500/30 flex items-center gap-1.5 animate-pulse transition-all cursor-pointer"
             >
               <AlertTriangle size={14} />
-              SOS Emergency
+              SOS
             </Link>
+
+            {/* Supabase User Profile / Login Button */}
+            {user ? (
+              <div className="relative" ref={userDropdownRef}>
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-1.5 p-1.5 pl-2.5 pr-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center">
+                    {(userProfile?.name || user.user_metadata?.name || 'U')[0].toUpperCase()}
+                  </div>
+                  <ChevronDown size={12} className={cn("transition-transform duration-200", userDropdownOpen && "rotate-180")} />
+                </button>
+
+                {userDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
+                    <div className="p-2 border-b border-slate-100">
+                      <p className="text-xs font-black text-slate-900 truncate">
+                        {userProfile?.name || user.user_metadata?.name || 'User'}
+                      </p>
+                      <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
+                    </div>
+
+                    <Link
+                      href="/profile"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl"
+                    >
+                      <User size={14} className="text-blue-600" />
+                      View Medical Profile
+                    </Link>
+
+                    <button
+                      onClick={async () => {
+                        setUserDropdownOpen(false);
+                        await logout();
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl cursor-pointer"
+                    >
+                      <LogOut size={14} />
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="text-xs font-black text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3.5 py-2.5 rounded-xl border border-blue-200 transition-all cursor-pointer"
+              >
+                Log In
+              </Link>
+            )}
           </div>
 
           {/* Mobile Hamburger Toggle */}
@@ -204,7 +266,7 @@ export default function Navbar() {
             </Link>
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200"
+              className="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer"
               aria-label="Open Mobile Menu"
             >
               <Menu size={20} />
@@ -231,10 +293,37 @@ export default function Navbar() {
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer"
                 >
                   <X size={18} />
                 </button>
+              </div>
+
+              {/* Mobile Auth / User Info */}
+              <div className="mb-4">
+                {user ? (
+                  <div className="p-3 bg-blue-50/80 rounded-2xl border border-blue-200 flex justify-between items-center">
+                    <div>
+                      <p className="text-xs font-black text-slate-900">{userProfile?.name || 'User'}</p>
+                      <p className="text-[10px] text-slate-500 truncate max-w-[150px]">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-[10px] font-black text-blue-700 bg-white px-2.5 py-1.5 rounded-lg shadow-xs"
+                    >
+                      Profile
+                    </Link>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-center py-2.5 bg-blue-50 text-blue-700 font-black text-xs rounded-xl border border-blue-200"
+                  >
+                    Log In / Register with Supabase
+                  </Link>
+                )}
               </div>
 
               {/* Mobile Primary Actions */}
@@ -244,14 +333,14 @@ export default function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white font-black py-3 rounded-xl shadow-md text-sm"
                 >
-                  <Pill size={16} /> Order Medicine (10-Min Dispatch)
+                  <Pill size={16} /> Order Medicine
                 </Link>
                 <Link
                   href="/emergency"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center justify-center gap-2 w-full bg-red-600 text-white font-black py-3 rounded-xl shadow-md text-sm animate-pulse"
                 >
-                  <AlertTriangle size={16} /> SOS Emergency Help (108)
+                  <AlertTriangle size={16} /> SOS Emergency Help
                 </Link>
               </div>
 

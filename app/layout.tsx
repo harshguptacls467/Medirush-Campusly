@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Emergency healthcare support, sub-10-minute medicine delivery, cold-chain assurance, AI symptom triage, and medical report simplification.",
 };
 
+import { AuthProvider } from "@/context/AuthContext";
+
 export default function RootLayout({
   children,
 }: {
@@ -28,8 +30,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#F5F9FF] text-slate-900 font-sans">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
 }
+

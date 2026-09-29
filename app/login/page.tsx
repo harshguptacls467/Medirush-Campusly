@@ -19,7 +19,8 @@ import {
   Phone,
   Sparkles,
   Zap,
-  Store
+  Store,
+  Bike
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -28,7 +29,8 @@ export default function LoginPage() {
   const { 
     user,
     loginAsDemo,
-    loginAsDemoPharmacy, 
+    loginAsDemoPharmacy,
+    loginAsDemoRider,
     loginWithGoogle, 
     loginWithApple, 
     sendPhoneOtp, 
@@ -701,28 +703,46 @@ export default function LoginPage() {
                 <span>Continue with Google</span>
               </button>
 
-              {/* Quick Demo Logins */}
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <button 
-                  type="button" 
-                  className="w-full py-3 text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 flex items-center justify-center gap-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all" 
-                  onClick={() => {
-                    loginAsDemo();
-                    router.push('/home');
-                  }}
-                >
-                  <Sparkles size={13} className="text-blue-600" /> Demo Patient
-                </button>
-                <button 
-                  type="button" 
-                  className="w-full py-3 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 flex items-center justify-center gap-1.5 rounded-xl font-bold text-xs shadow-xs cursor-pointer transition-all" 
-                  onClick={() => {
-                    loginAsDemoPharmacy();
-                    router.push('/chemist');
-                  }}
-                >
-                  <Store size={13} className="text-emerald-600" /> Demo Chemist
-                </button>
+              {/* Quick Role Portal Access & Demo Logins */}
+              <div className="pt-2 space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block text-center">
+                  Instant Portal &amp; Role Access
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button 
+                    type="button" 
+                    className="w-full py-2.5 px-2 text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 flex items-center justify-center gap-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all hover:scale-[1.02]" 
+                    onClick={() => {
+                      loginAsDemo();
+                      router.push('/home');
+                    }}
+                  >
+                    <Sparkles size={13} className="text-blue-600 shrink-0" /> 
+                    <span>Demo Patient</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className="w-full py-2.5 px-2 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 flex items-center justify-center gap-1.5 rounded-xl font-bold text-xs shadow-xs cursor-pointer transition-all hover:scale-[1.02]" 
+                    onClick={() => {
+                      loginAsDemoPharmacy();
+                      router.push('/chemist');
+                    }}
+                  >
+                    <Store size={13} className="text-emerald-600 shrink-0" /> 
+                    <span>Demo Chemist</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className="w-full py-2.5 px-2 text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-300 flex items-center justify-center gap-1.5 rounded-xl font-bold text-xs shadow-xs cursor-pointer transition-all hover:scale-[1.02]" 
+                    onClick={() => {
+                      loginAsDemoRider();
+                      router.push('/rider');
+                    }}
+                  >
+                    <Bike size={13} className="text-cyan-600 shrink-0" /> 
+                    <span>Demo Rider</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

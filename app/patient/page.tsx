@@ -584,24 +584,13 @@ export default function PatientApp() {
           </div>
         </div>
 
-        {/* Action Links & Controls */}
+        {/* Action Controls */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           <a
-            href="/chemist"
-            target="_blank"
-            className="hidden sm:flex items-center gap-1.5 text-xs text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-xl transition font-black"
+            href="/login"
+            className="flex items-center gap-1.5 text-xs text-[#1565C0] hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-xl transition font-black"
           >
-            <span>Chemist Hub</span>
-            <ExternalLink className="w-3.5 h-3.5 text-blue-700" />
-          </a>
-          <a
-            href="/rider"
-            target="_blank"
-            className="hidden sm:flex items-center gap-1.5 text-xs text-cyan-900 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 px-3 py-1.5 rounded-xl transition font-black"
-          >
-            <Bike className="w-3.5 h-3.5 text-cyan-700" />
-            <span>Rider Portal</span>
-            <ExternalLink className="w-3.5 h-3.5 text-cyan-700" />
+            <span>Login / Switch</span>
           </a>
           <button
             onClick={handleResetAll}

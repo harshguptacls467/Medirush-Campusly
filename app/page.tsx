@@ -869,14 +869,9 @@ export default function LandingPage() {
                 Launch Patient Web App →
               </button>
             </Link>
-            <Link href="/chemist">
-              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer transition-transform hover:scale-105 active:scale-95">
-                Chemist Merchant Terminal
-              </button>
-            </Link>
-            <Link href="/rider">
-              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-bold text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer transition-transform hover:scale-105 active:scale-95">
-                Rider Delivery Portal
+            <Link href="/login">
+              <button className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-black text-sm px-6 py-4 rounded-2xl shadow-sm cursor-pointer transition-transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                <span>🔐 Staff &amp; Partner Login (Chemist / Rider)</span>
               </button>
             </Link>
           </div>

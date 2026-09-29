@@ -36,6 +36,7 @@ interface AuthContextType {
   loading: boolean;
   loginAsDemo: () => void;
   loginAsDemoPharmacy: () => void;
+  loginAsDemoRider: () => void;
   logout: () => Promise<void>;
   logoutAllDevices: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -200,6 +201,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(demoPharmUser);
     setUserProfile(demoProf);
     setPharmacyProfile(demoPharm);
+  };
+
+  const loginAsDemoRider = () => {
+    const demoRiderUser = { 
+      id: 'demo-rider-123', 
+      email: 'rider@medirush.app', 
+      user_metadata: { name: 'Rahul Sharma (Rider)', role: 'rider' } 
+    };
+    const demoProf: UserProfile = { 
+      id: 'demo-rider-123', 
+      name: 'Rahul Sharma (Rider)', 
+      email: 'rider@medirush.app', 
+      role: 'rider', 
+      verified: true 
+    };
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('demo_user', JSON.stringify(demoRiderUser));
+    }
+    setUser(demoRiderUser);
+    setUserProfile(demoProf);
+    setPharmacyProfile(null);
   };
 
   const logout = async () => {
@@ -386,6 +409,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       loading, 
       loginAsDemo,
       loginAsDemoPharmacy,
+      loginAsDemoRider,
       logout,
       logoutAllDevices,
       loginWithGoogle,

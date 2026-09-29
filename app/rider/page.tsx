@@ -27,7 +27,8 @@ import {
   Layers,
   ArrowRight,
   Radio,
-  FileText
+  FileText,
+  LogIn
 } from 'lucide-react';
 import { CHEMIST_REGISTRY, ChemistNode } from '@/lib/chemists';
 import { MultiFulfillmentPlan, PharmacyCoverageNode } from '@/lib/multi-pharmacy-fulfillment';
@@ -353,104 +354,100 @@ export default function RiderPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#071322] text-slate-100 font-sans flex flex-col selection:bg-blue-500 selection:text-white">
       {/* Top Rider Terminal Header */}
-      <header className="h-16 bg-slate-950 border-b border-slate-800 px-6 flex items-center justify-between shrink-0 shadow-lg">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-emerald-900/50">
-            <Bike className="w-6 h-6 text-white" />
+      <header className="min-h-[4.25rem] bg-gradient-to-r from-[#1565C0] via-[#0D47A1] to-[#0A2540] border-b border-blue-400/20 px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-xl relative z-20">
+        <div className="flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-white font-black text-lg shadow-md backdrop-blur-md">
+            <Bike className="w-6 h-6 text-emerald-300" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-white tracking-tight">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-base font-extrabold text-white tracking-tight">
                 Rahul Sharma
               </h1>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/80 font-semibold">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/40 font-semibold tracking-wide">
                 HERO SPLENDOR • MP-43-E-2101
               </span>
             </div>
-            <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
-              <span className="text-emerald-400 font-medium">● Duty Active (Ratlam Grid)</span>
-              <span>•</span>
-              <span className="text-cyan-400 flex items-center gap-1">
-                <Snowflake className="w-3 h-3" /> Cold Gel Thermal Carrier Attached (4.2°C)
+            <p className="text-xs text-blue-100/90 flex flex-wrap items-center gap-1.5 mt-0.5">
+              <span className="text-emerald-300 font-semibold flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Duty Active (Ratlam Grid)
+              </span>
+              <span className="text-blue-200/60 hidden sm:inline">•</span>
+              <span className="text-cyan-200 flex items-center gap-1 font-medium">
+                <Snowflake className="w-3 h-3 text-cyan-300" /> Cold Gel Thermal Carrier Attached (4.2°C)
               </span>
             </p>
           </div>
         </div>
 
         {/* Status & Control Bar */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Simulate New Delivery Order */}
           <button
             onClick={handleSimulateNewJob}
-            className="px-3 py-1.5 rounded-lg border border-amber-500/80 bg-amber-950/60 hover:bg-amber-900 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-amber-950/50"
+            className="px-3 py-1.5 rounded-xl border border-amber-400/40 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md backdrop-blur-md"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Simulate 2-Node Pickup Job</span>
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden sm:inline">Simulate 2-Node Pickup</span>
+            <span className="sm:hidden">Simulate Job</span>
           </button>
 
           {/* Online / Offline Toggle */}
           <button
             onClick={() => setIsOnline(!isOnline)}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md ${
               isOnline
-                ? 'bg-emerald-950/80 border-emerald-700 text-emerald-300 hover:bg-emerald-900/80'
-                : 'bg-amber-950/80 border-amber-700 text-amber-300 hover:bg-amber-900/80'
+                ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200 hover:bg-emerald-500/30'
+                : 'bg-amber-500/20 border-amber-400/40 text-amber-200 hover:bg-amber-500/30'
             }`}
           >
-            {isOnline ? <Wifi className="w-3.5 h-3.5 text-emerald-400" /> : <WifiOff className="w-3.5 h-3.5 text-amber-400" />}
-            <span>{isOnline ? 'GPS Live (Connected)' : 'Offline (Cached Route)'}</span>
+            {isOnline ? <Wifi className="w-3.5 h-3.5 text-emerald-300" /> : <WifiOff className="w-3.5 h-3.5 text-amber-300" />}
+            <span>{isOnline ? 'GPS Live' : 'Offline'}</span>
           </button>
 
+          {/* Centralized Switch Role to /login */}
           <a
-            href="/patient"
-            target="_blank"
-            className="text-xs text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1 transition"
+            href="/login"
+            className="text-xs font-semibold text-white/90 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md shadow-sm"
+            title="Switch portal or account"
           >
-            <span>Patient App</span>
-            <ExternalLink className="w-3 h-3 text-slate-400" />
-          </a>
-
-          <a
-            href="/chemist"
-            target="_blank"
-            className="text-xs text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1 transition"
-          >
-            <span>Chemist Terminal</span>
-            <ExternalLink className="w-3 h-3 text-slate-400" />
+            <LogIn className="w-3.5 h-3.5 text-blue-200" />
+            <span>Switch Role</span>
           </a>
         </div>
       </header>
 
       {/* Main Grid: Left Column Active Navigation & Workflow + Right Column Intelligence Panels */}
-      <div className="flex-1 grid grid-cols-12 gap-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-y-auto lg:overflow-hidden">
         
         {/* LEFT COLUMN: Active Delivery Mission & Navigation */}
-        <main className="col-span-8 p-6 flex flex-col gap-5 border-r border-slate-800 overflow-y-auto">
+        <main className="col-span-1 lg:col-span-8 p-4 sm:p-6 flex flex-col gap-5 border-b lg:border-b-0 lg:border-r border-slate-800/80 overflow-y-auto">
           {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-4 gap-3">
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium">Deliveries Today</span>
-              <span className="text-2xl font-black text-emerald-400 font-mono mt-0.5 block">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-[#0c1a2d] border border-blue-900/40 rounded-2xl p-3.5 shadow-md">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Deliveries Today</span>
+              <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono mt-0.5 block">
                 {completedDeliveriesCount} Completed
               </span>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium">Today's Payout</span>
-              <span className="text-2xl font-black text-white font-mono mt-0.5 block">
+            <div className="bg-[#0c1a2d] border border-blue-900/40 rounded-2xl p-3.5 shadow-md">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Today's Payout</span>
+              <span className="text-xl sm:text-2xl font-black text-white font-mono mt-0.5 block">
                 ₹{todaysEarnings}
               </span>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium">Carrier Thermal Temp</span>
-              <span className="text-2xl font-black text-cyan-400 font-mono mt-0.5 block">
+            <div className="bg-[#0c1a2d] border border-blue-900/40 rounded-2xl p-3.5 shadow-md">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Carrier Thermal Temp</span>
+              <span className="text-xl sm:text-2xl font-black text-cyan-400 font-mono mt-0.5 block">
                 {carrierTemp}°C (Safe)
               </span>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium">Average ETA SLA</span>
-              <span className="text-2xl font-black text-indigo-400 font-mono mt-0.5 block">
+            <div className="bg-[#0c1a2d] border border-blue-900/40 rounded-2xl p-3.5 shadow-md">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Average ETA SLA</span>
+              <span className="text-xl sm:text-2xl font-black text-blue-400 font-mono mt-0.5 block">
                 17 Mins
               </span>
             </div>
@@ -458,34 +455,34 @@ export default function RiderPortal() {
 
           {/* ACTIVE DISPATCH JOB CARD */}
           {activeDelivery ? (
-            <div className="bg-slate-950 border-2 border-emerald-500/80 rounded-2xl p-6 shadow-xl flex flex-col gap-5 ring-2 ring-emerald-500/20">
+            <div className="bg-[#0a1727] border-2 border-emerald-500/80 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col gap-5 ring-2 ring-emerald-500/20">
               {/* Order Header */}
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-black text-white bg-red-600 px-3 py-1 rounded-md uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-blue-900/40 pb-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <span className="text-xs font-black text-white bg-red-600 px-3 py-1 rounded-lg uppercase tracking-wider flex items-center gap-1.5 shadow-sm animate-pulse">
                     <Radio className="w-3.5 h-3.5" /> Active Emergency Dispatch #{activeDelivery.id}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">
+                  <span className="text-xs text-blue-200/70 font-mono">
                     Multi-Node Cooperative Pickup
                   </span>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-3 py-1 rounded-lg">
+                  <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-800 px-3 py-1 rounded-lg">
                     Total Route: {activeDelivery.totalDistanceKm} km • Target ETA: {activeDelivery.etaMinutes} Mins
                   </span>
                 </div>
               </div>
 
               {/* Patient Dropoff Location */}
-              <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+              <div className="bg-[#0e2238] p-4 rounded-xl border border-blue-900/50 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-700 flex items-center justify-center text-emerald-400">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-700/80 flex items-center justify-center text-emerald-400 shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Final Delivery Destination:</span>
-                    <strong className="text-white text-sm">{activeDelivery.patient_name}</strong>
+                    <span className="text-[10px] text-blue-200/60 uppercase tracking-wider block font-semibold">Final Delivery Destination:</span>
+                    <strong className="text-white text-sm font-bold">{activeDelivery.patient_name}</strong>
                     <span className="text-slate-400 block mt-0.5 font-mono">📍 {activeDelivery.area}, {activeDelivery.city}</span>
                   </div>
                 </div>
@@ -648,17 +645,19 @@ export default function RiderPortal() {
               </div>
             </div>
           ) : (
-            <div className="my-auto py-20 text-center bg-slate-950/60 rounded-2xl border border-slate-800 p-8 flex flex-col items-center gap-3">
-              <Clock className="w-10 h-10 text-emerald-400 animate-pulse" />
+            <div className="my-auto py-16 sm:py-20 text-center bg-[#0c1a2d] rounded-2xl border border-blue-900/40 p-8 flex flex-col items-center gap-3.5 shadow-xl">
+              <div className="w-14 h-14 rounded-2xl bg-blue-950/80 border border-blue-700/60 flex items-center justify-center">
+                <Clock className="w-7 h-7 text-emerald-400 animate-pulse" />
+              </div>
               <h3 className="text-base font-bold text-white">No Active Delivery Assignment</h3>
-              <p className="text-xs text-slate-400 max-w-sm">
+              <p className="text-xs text-blue-200/70 max-w-sm leading-relaxed">
                 When a cooperative emergency prescription order is locked, it will appear here with automated turn-by-turn multi-node routing.
               </p>
               <button
                 onClick={handleSimulateNewJob}
-                className="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-lg"
+                className="mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-lg shadow-blue-900/40"
               >
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4 text-amber-300" />
                 Simulate Sample 2-Node Delivery
               </button>
             </div>
@@ -666,79 +665,79 @@ export default function RiderPortal() {
         </main>
 
         {/* RIGHT COLUMN: Real-Time Intelligence, Thermal Telemetry & Rankings */}
-        <aside className="col-span-4 p-6 bg-slate-950/70 flex flex-col gap-5 overflow-y-auto">
+        <aside className="col-span-1 lg:col-span-4 p-4 sm:p-6 bg-[#081526]/80 flex flex-col gap-5 overflow-y-auto border-t lg:border-t-0 border-blue-900/30">
           
           {/* 1. Live Thermal Cold Gel Carrier Telemetry */}
-          <div className="bg-slate-900 border border-cyan-500/60 rounded-2xl p-4 shadow-lg flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div className="bg-[#0c1a2d] border border-cyan-500/50 rounded-2xl p-4 shadow-lg flex flex-col gap-3">
+            <div className="flex items-center justify-between border-b border-blue-900/40 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-cyan-950/80 border border-cyan-700/80 text-cyan-300 flex items-center justify-center">
                   <Thermometer className="w-4 h-4" />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-white">Cold Gel Thermal Telemetry</h4>
-                  <span className="text-[10px] text-slate-400">Passive Cooling SLA Window</span>
+                  <span className="text-[10px] text-blue-200/60">Passive Cooling SLA Window</span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
                 2°C – 8°C VERIFIED
               </span>
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 block">Ambient</span>
+              <div className="bg-[#081526] p-2.5 rounded-xl border border-blue-900/40 text-center">
+                <span className="text-[10px] text-slate-400 block font-medium">Ambient</span>
                 <span className="text-base font-black text-white font-mono">
                   {weatherData?.temperatureCelsius ?? 29}°C
                 </span>
                 <span className="text-[9px] text-emerald-400 block mt-0.5">Live Open-Meteo</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 block">Carrier Core</span>
+              <div className="bg-[#081526] p-2.5 rounded-xl border border-blue-900/40 text-center">
+                <span className="text-[10px] text-slate-400 block font-medium">Carrier Core</span>
                 <span className="text-base font-black text-cyan-400 font-mono">
                   {carrierTemp}°C
                 </span>
-                <span className="text-[9px] text-cyan-400/80 block mt-0.5">Blue Ice Pouch</span>
+                <span className="text-[9px] text-cyan-300/80 block mt-0.5">Blue Ice Pouch</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 block">Safe Window</span>
+              <div className="bg-[#081526] p-2.5 rounded-xl border border-blue-900/40 text-center">
+                <span className="text-[10px] text-slate-400 block font-medium">Safe Window</span>
                 <span className="text-base font-black text-emerald-400 font-mono">
                   56 Min
                 </span>
-                <span className="text-[9px] text-slate-400 block mt-0.5">ETA: 19 Min</span>
+                <span className="text-[9px] text-blue-200/60 block mt-0.5">ETA: 19 Min</span>
               </div>
             </div>
           </div>
 
           {/* 2. Live Fulfillment Intelligence Rankings */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div className="bg-[#0c1a2d] border border-blue-900/40 rounded-2xl p-4 shadow-lg flex flex-col gap-3">
+            <div className="flex items-center justify-between border-b border-blue-900/40 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-indigo-950 border border-indigo-800 text-indigo-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-blue-950/80 border border-blue-700/80 text-blue-300 flex items-center justify-center">
                   <Activity className="w-4 h-4" />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-white">Live Fulfillment Intelligence</h4>
-                  <span className="text-[10px] text-slate-400">Weighted scoring • Real-time decay</span>
+                  <span className="text-[10px] text-blue-200/60">Weighted scoring • Real-time decay</span>
                 </div>
               </div>
-              <span className="text-[10px] font-mono text-indigo-300 font-bold bg-indigo-950 border border-indigo-800 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-mono text-blue-300 font-bold bg-blue-950 border border-blue-800 px-2 py-0.5 rounded-full">
                 Multi-Node
               </span>
             </div>
 
             <div className="space-y-2">
               {CHEMIST_REGISTRY.slice(0, 3).map((chem, idx) => (
-                <div key={chem.id} className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-bold">
+                <div key={chem.id} className="p-2.5 rounded-xl bg-[#081526] border border-blue-900/30 text-xs flex items-center justify-between hover:border-blue-700/50 transition">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-blue-950 border border-blue-800 text-blue-300 flex items-center justify-center text-[10px] font-bold">
                       {idx + 1}
                     </span>
                     <div>
-                      <strong className="text-white block text-[11px]">{chem.name}</strong>
+                      <strong className="text-white block text-[11px] font-semibold">{chem.name}</strong>
                       <div className="flex items-center gap-2 text-[10px] text-slate-400 font-mono mt-0.5">
                         <span>Med: {(chem.chronic_stock_rating * 100).toFixed(0)}%</span>
                         <span>•</span>
@@ -748,7 +747,7 @@ export default function RiderPortal() {
                       </div>
                     </div>
                   </div>
-                  <span className="text-xs font-bold font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded-lg">
                     Score {Math.round(chem.chronic_stock_rating * 50 + 40)}
                   </span>
                 </div>
@@ -757,14 +756,14 @@ export default function RiderPortal() {
           </div>
 
           {/* 3. System Intelligence Status */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col gap-2.5">
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-              <div className="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800 text-emerald-400 flex items-center justify-center">
+          <div className="bg-[#0c1a2d] border border-blue-900/40 rounded-2xl p-4 shadow-lg flex flex-col gap-2.5">
+            <div className="flex items-center gap-2 border-b border-blue-900/40 pb-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-950/80 border border-emerald-700/80 text-emerald-400 flex items-center justify-center">
                 <Zap className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-white">System Intelligence Engine</h4>
-                <span className="text-[10px] text-slate-400">Live integration status verified</span>
+                <span className="text-[10px] text-blue-200/60">Live integration status verified</span>
               </div>
             </div>
 
@@ -777,11 +776,11 @@ export default function RiderPortal() {
                 { label: 'Weather API', sub: 'Open-Meteo Live', live: true },
                 { label: 'Messaging', sub: 'Twilio WhatsApp', live: true },
               ].map((item, i) => (
-                <div key={i} className="p-2 bg-slate-950 border border-slate-800/80 rounded-lg flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <div key={i} className="p-2 bg-[#081526] border border-blue-900/30 rounded-xl flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                   <div>
                     <span className="font-bold text-slate-200 block text-[11px] leading-tight">{item.label}</span>
-                    <span className="text-[9px] text-slate-400">{item.sub} • ✓ Active</span>
+                    <span className="text-[9px] text-slate-400">{item.sub} • Active</span>
                   </div>
                 </div>
               ))}

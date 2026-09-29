@@ -98,9 +98,21 @@ export default function ChemistPortal() {
     }
   }, [activeChemistId]);
 
-  // Update inventory when active chemist node changes
+  // Update inventory when active chemist node changes and read tab from URL
   useEffect(() => {
     fetchInventory(activeChemistId);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam === 'invoice_scanner' || tabParam === 'inventory' || tabParam === 'search' || tabParam === 'orders') {
+        setActiveNav(tabParam);
+      } else if (window.location.hash) {
+        const hash = window.location.hash.replace('#', '');
+        if (hash === 'invoice_scanner' || hash === 'inventory' || hash === 'search' || hash === 'orders') {
+          setActiveNav(hash as any);
+        }
+      }
+    }
   }, [activeChemistId, fetchInventory]);
 
   // Update Pending Sync Count

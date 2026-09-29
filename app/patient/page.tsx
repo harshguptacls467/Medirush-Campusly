@@ -553,7 +553,7 @@ export default function PatientApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[#EEF5FF] via-slate-50 to-[#F0F7FF] text-slate-900 font-sans antialiased flex flex-col selection:bg-blue-500 selection:text-white">
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -562,42 +562,42 @@ export default function PatientApp() {
         onChange={handleFileUpload}
       />
 
-      {/* Modern B2C Medical Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200/90 shadow-xs px-4 sm:px-8 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <a href="/" className="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-base shadow-md shadow-emerald-600/25 hover:opacity-90 transition">
+      {/* Modern MediRush Header with Royal Blue Accents */}
+      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-blue-100 shadow-xs px-3 sm:px-6 lg:px-8 py-3 flex items-center justify-between transition-all">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <a href="/home" className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-[#1565C0] via-[#0D47A1] to-[#0A2540] flex items-center justify-center text-white font-black text-lg shadow-md shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all">
             M
           </a>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-slate-900 flex items-center gap-1.5">
-                MediRush <span className="text-emerald-700 font-medium text-xs">Patient App</span>
+              <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 flex items-center gap-1.5">
+                MediRush <span className="bg-blue-50 text-[#1565C0] border border-blue-200 font-black text-[11px] px-2 py-0.5 rounded-full">Patient Order</span>
               </span>
-              <a href="/" className="text-[10px] text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded transition">
-                ← Back to Overview
+              <a href="/home" className="hidden sm:inline-flex text-[11px] font-bold text-slate-500 hover:text-[#1565C0] bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 px-2.5 py-0.5 rounded-lg transition">
+                ← Back to Home
               </a>
             </div>
-            <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{userCoords?.isLive ? '⚡ Live GPS Chemist Grid Active' : '⚡ Local Chemist Grid Active'}</span>
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="truncate">{userCoords?.isLive ? '⚡ Live GPS Chemist Grid Active' : '⚡ Local Chemist Grid Active'}</span>
             </div>
           </div>
         </div>
 
-        {/* Demo Navigation to Chemist Merchant Portal & Rider App */}
-        <div className="flex items-center gap-2">
+        {/* Action Links & Controls */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <a
             href="/chemist"
             target="_blank"
-            className="flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition font-semibold"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-xl transition font-black"
           >
-            <span>Chemist Terminal</span>
-            <ExternalLink className="w-3.5 h-3.5 text-emerald-700" />
+            <span>Chemist Hub</span>
+            <ExternalLink className="w-3.5 h-3.5 text-blue-700" />
           </a>
           <a
             href="/rider"
             target="_blank"
-            className="flex items-center gap-1.5 text-xs text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 px-3 py-1.5 rounded-lg transition font-semibold"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-cyan-900 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 px-3 py-1.5 rounded-xl transition font-black"
           >
             <Bike className="w-3.5 h-3.5 text-cyan-700" />
             <span>Rider Portal</span>
@@ -605,26 +605,31 @@ export default function PatientApp() {
           </a>
           <button
             onClick={handleResetAll}
-            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 bg-white hover:bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-lg transition font-medium cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-red-700 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 px-3 py-1.5 rounded-xl transition font-bold cursor-pointer"
+            title="Reset workflow"
           >
-            <RefreshCw className="w-3 h-3" />
-            <span className="hidden sm:inline">Reset</span>
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">Reset</span>
           </button>
         </div>
       </header>
 
       {/* Main Patient Consumer Container */}
-      <main className="flex-1 max-w-3xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-6">
+      <main className="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-6 lg:p-8 flex flex-col gap-6">
 
-        {/* ═══ Top Master Navigation & Stage Banner ═══ */}
-        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        {/* ═══ Top Master Navigation & Stage Banner (Royal Blue Theme) ═══ */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#1565C0] via-[#0D47A1] to-[#0A2540] text-white rounded-3xl p-5 sm:p-8 shadow-xl shadow-blue-900/25 border border-blue-400/30 flex flex-col gap-5">
+          {/* Ambient Glow in background */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-sky-400/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-black uppercase tracking-wider text-amber-300 bg-amber-400/15 border border-amber-400/30 px-3 py-0.5 rounded-full shadow-xs">
                   MediRush Patient Workflow
                 </span>
-                <span className="text-[11px] font-mono text-slate-500 font-semibold">
+                <span className="text-[11px] font-mono text-blue-200 font-bold">
                   {flowState === 'IDLE' && 'Stage 1 of 4: Prescription Intake'}
                   {flowState === 'PARSING' && 'Stage 1 of 4: AI Extraction'}
                   {flowState === 'PARSED' && 'Stage 2 of 4: Review & Confirm'}
@@ -632,7 +637,7 @@ export default function PatientApp() {
                   {flowState === 'ACCEPTED' && 'Stage 4 of 4: Order Out for Delivery'}
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight mt-1.5 leading-snug">
                 {flowState === 'IDLE' && 'Scan Doctor’s Prescription to Find Nearby Stock'}
                 {flowState === 'PARSING' && 'AI Multimodal Vision Deciphering Prescription...'}
                 {flowState === 'PARSED' && 'Review Generic Substitutes & Confirm Dispatch'}
@@ -651,15 +656,15 @@ export default function PatientApp() {
                   });
                 }
               }}
-              className="text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-2 rounded-xl transition cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5 self-start sm:self-auto"
+              className="text-xs font-black text-blue-950 bg-gradient-to-r from-amber-300 to-amber-400 hover:from-amber-400 hover:to-amber-500 px-4 py-2.5 rounded-2xl transition cursor-pointer shadow-lg shadow-amber-400/20 shrink-0 flex items-center gap-1.5 self-start sm:self-auto hover:scale-105 active:scale-95"
             >
-              <MapPin className="w-4 h-4 text-emerald-600" />
+              <MapPin className="w-4 h-4 text-blue-950" />
               <span>{userCoords?.isLive ? 'GPS Locked' : 'Locate My Area'}</span>
             </button>
           </div>
 
           {/* Step Pipeline Navigation Indicator */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
             {[
               { num: '1', title: '1. Scan Rx', desc: 'Handwriting OCR', active: flowState === 'IDLE' || flowState === 'PARSING', done: flowState === 'PARSED' || flowState === 'BROADCASTING' || flowState === 'ACCEPTED' },
               { num: '2', title: '2. Review & Save', desc: 'Jan Aushadhi Sub.', active: flowState === 'PARSED', done: flowState === 'BROADCASTING' || flowState === 'ACCEPTED' },
@@ -668,55 +673,55 @@ export default function PatientApp() {
             ].map((step, idx) => (
               <div 
                 key={idx} 
-                className={`p-3 rounded-2xl border transition-all flex flex-col gap-1 ${
+                className={`p-3 sm:p-3.5 rounded-2xl border transition-all flex flex-col gap-1.5 ${
                   step.active 
-                    ? 'bg-gradient-to-br from-emerald-50 to-teal-50/50 border-emerald-400 ring-2 ring-emerald-500/20 shadow-xs' 
+                    ? 'bg-white text-slate-900 border-white shadow-lg ring-2 ring-amber-400' 
                     : step.done 
-                    ? 'bg-slate-50 border-emerald-200 text-slate-700' 
-                    : 'bg-slate-50/50 border-slate-200/70 text-slate-400 opacity-70'
+                    ? 'bg-white/15 border-white/20 text-white' 
+                    : 'bg-white/5 border-white/10 text-blue-200/60'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black ${
                     step.done 
-                      ? 'bg-emerald-600 text-white' 
+                      ? 'bg-emerald-500 text-white' 
                       : step.active 
-                      ? 'bg-emerald-600 text-white animate-pulse' 
-                      : 'bg-slate-200 text-slate-500'
+                      ? 'bg-[#1565C0] text-white shadow-xs' 
+                      : 'bg-white/10 text-white/50'
                   }`}>
                     {step.done ? '✓' : step.num}
                   </span>
-                  {step.active && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />}
+                  {step.active && <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />}
                 </div>
                 <div>
-                  <span className={`text-xs font-black block truncate ${step.active ? 'text-slate-900' : step.done ? 'text-slate-800' : 'text-slate-400'}`}>
+                  <span className={`text-xs font-black block truncate ${step.active ? 'text-slate-900' : 'text-white'}`}>
                     {step.title}
                   </span>
-                  <span className="text-[10px] text-slate-500 block truncate font-medium">{step.desc}</span>
+                  <span className={`text-[10px] block truncate font-medium ${step.active ? 'text-slate-500' : 'text-blue-200/80'}`}>{step.desc}</span>
                 </div>
               </div>
             ))}
           </div>
 
           {/* ═══ "WHAT TO DO NEXT / AB KYA KAREN?" GUIDANCE BOX ═══ */}
-          <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white rounded-2xl p-4 border border-emerald-500/40 shadow-md flex items-start gap-3.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 font-black text-sm">
+          <div className="relative z-10 bg-slate-950/60 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-cyan-400/30 shadow-lg flex items-start gap-3.5">
+            <div className="w-9 h-9 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 mt-0.5 font-black text-base shadow-xs">
               👉
             </div>
             <div className="text-xs">
               <div className="flex items-center gap-2">
-                <span className="font-black text-emerald-300 uppercase tracking-wider text-[11px]">
+                <span className="font-black text-amber-300 uppercase tracking-wider text-[11px]">
                   What To Do Next (मार्गदर्शन / Guidance):
                 </span>
-                <span className="text-[10px] font-mono bg-emerald-950 border border-emerald-700 px-2 py-0.2 rounded text-emerald-200 font-bold">
+                <span className="text-[10px] font-mono bg-blue-900/80 border border-blue-600 px-2 py-0.5 rounded text-blue-200 font-bold">
                   Step {flowState === 'IDLE' || flowState === 'PARSING' ? '1' : flowState === 'PARSED' ? '2' : flowState === 'BROADCASTING' ? '3' : '4'}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-200 mt-1 leading-relaxed font-medium">
+              <p className="text-[11px] sm:text-xs text-blue-100 mt-1.5 leading-relaxed font-medium">
                 {flowState === 'IDLE' && (
                   <span>
                     <strong>Option A:</strong> Take a photo or upload your doctor&apos;s handwritten slip below. <br/>
-                    <strong>Option B (Fastest for testing):</strong> Click the black <strong>&quot;Load Demo Rx&quot;</strong> button below to instantly populate Insulin &amp; Blood Pressure medicines.
+                    <strong>Option B (Fastest for testing):</strong> Click the <strong>&quot;Load Demo Rx&quot;</strong> button below to instantly populate Insulin &amp; Blood Pressure medicines.
                   </span>
                 )}
                 {flowState === 'PARSING' && (
@@ -726,7 +731,7 @@ export default function PatientApp() {
                 )}
                 {flowState === 'PARSED' && (
                   <span>
-                    Review your prescribed medicines, generic Jan Aushadhi substitutes, and total savings below. When ready, click the large green <strong>&quot;Broadcast &amp; Order via WhatsApp&quot;</strong> button below to ping nearby pharmacies.
+                    Review your prescribed medicines, generic Jan Aushadhi substitutes, and total savings below. When ready, click the large <strong>&quot;Broadcast &amp; Order via WhatsApp&quot;</strong> button below to ping nearby pharmacies.
                   </span>
                 )}
                 {flowState === 'BROADCASTING' && (
@@ -746,15 +751,15 @@ export default function PatientApp() {
 
         {/* ═══ 1. Home / Prescription Upload Zone ═══ */}
         {flowState === 'IDLE' && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 border border-blue-100 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+                <span className="text-xs font-black uppercase tracking-wider text-[#1565C0]">
                   Step 1: Prescription Intake &amp; Salt OCR
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">
                 Upload Doctor&apos;s Prescription Slip
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
@@ -765,24 +770,24 @@ export default function PatientApp() {
             {/* Big Dropzone */}
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="border-3 border-dashed border-emerald-300 hover:border-emerald-500 bg-gradient-to-b from-emerald-50/40 via-teal-50/20 to-white hover:from-emerald-50/70 hover:to-teal-50/40 rounded-3xl p-8 sm:p-12 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group shadow-xs"
+              className="border-3 border-dashed border-blue-300 hover:border-blue-600 bg-gradient-to-b from-blue-50/50 via-sky-50/20 to-white hover:from-blue-50/80 hover:to-sky-50/40 rounded-3xl p-6 sm:p-12 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group shadow-xs"
             >
-              <div className="w-20 h-20 rounded-2xl bg-white border border-emerald-200 shadow-md flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Upload className="w-10 h-10 text-emerald-600" />
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#1565C0] to-sky-500 shadow-lg shadow-blue-500/25 flex items-center justify-center group-hover:scale-105 transition-transform text-white">
+                <Upload className="w-10 h-10 text-white" />
               </div>
               <div className="text-center">
                 <h3 className="text-base sm:text-lg font-black text-slate-900">Click Here to Scan / Upload Prescription</h3>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">Supports Camera snapshots, PNG, JPG, and PDF doctor slips</p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
-                <span className="text-xs font-bold text-emerald-800 bg-white border border-emerald-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-600" /> Handwriting OCR
+                <span className="text-xs font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-indigo-600" /> Handwriting OCR
                 </span>
-                <span className="text-xs font-bold text-sky-800 bg-white border border-sky-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
+                <span className="text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
                   <Snowflake className="w-4 h-4 text-sky-600" /> 2°C - 8°C Cold Chain
                 </span>
-                <span className="text-xs font-bold text-indigo-800 bg-white border border-indigo-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-indigo-600" /> Schedule H Safe
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full shadow-2xs flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Schedule H Safe
                 </span>
               </div>
             </div>
@@ -795,20 +800,20 @@ export default function PatientApp() {
             </div>
 
             {/* 1-Click Demo Launcher */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-slate-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg border border-slate-800">
+            <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#0D47A1] to-[#0A2540] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl border border-blue-400/30">
               <div className="text-left">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
                   <span className="text-sm sm:text-base font-black text-white">Load Demo Chronic Prescription</span>
-                  <span className="text-[10px] font-mono text-amber-300 bg-amber-950 border border-amber-800 px-2 py-0.5 rounded font-bold">Mock Data</span>
+                  <span className="text-[10px] font-mono text-amber-300 bg-amber-950/80 border border-amber-700 px-2 py-0.5 rounded font-bold">Mock Data</span>
                 </div>
-                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                <p className="text-xs text-blue-100 mt-1 leading-relaxed">
                   Loads a verified chronic prescription with <strong>Lantus Insulin (Cold Storage 2-8°C)</strong> + <strong>Telma 40 (Blood Pressure)</strong> for instant evaluation.
                 </p>
               </div>
               <button
                 onClick={handleLoadDemo}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-slate-950 font-black py-3 px-6 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-emerald-500/25 active:scale-[0.98] shrink-0"
+                className="w-full sm:w-auto bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black py-3 px-6 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-lg shadow-amber-400/25 hover:scale-105 active:scale-95 shrink-0"
               >
                 <span>Load Demo Rx</span>
                 <ArrowRight className="w-4 h-4" />
@@ -830,10 +835,10 @@ export default function PatientApp() {
 
         {/* ═══ Live Interactive Pharmacy Network Map ═══ */}
         {(flowState === 'IDLE' || flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col gap-3.5">
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-blue-100 shadow-sm flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#1565C0] shadow-2xs">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
@@ -841,7 +846,7 @@ export default function PatientApp() {
                   <p className="text-xs text-slate-500">Live locations, phone numbers &amp; cold-chain readiness</p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-mono">
+              <span className="text-xs font-black text-[#1565C0] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-mono">
                 4 Active Hubs
               </span>
             </div>
@@ -860,16 +865,16 @@ export default function PatientApp() {
 
         {/* ═══ 2. Real Gemini AI Processing State ═══ */}
         {flowState === 'PARSING' && (
-          <div className="bg-white rounded-3xl p-10 sm:p-14 border border-slate-200/90 shadow-sm flex flex-col items-center justify-center text-center gap-6 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-8 sm:p-14 border border-blue-100 shadow-sm flex flex-col items-center justify-center text-center gap-6 animate-in fade-in duration-300">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin flex items-center justify-center" />
-              <Pill className="w-10 h-10 text-emerald-600 absolute inset-0 m-auto animate-pulse" />
+              <div className="w-24 h-24 rounded-full border-4 border-blue-100 border-t-[#1565C0] animate-spin flex items-center justify-center" />
+              <Pill className="w-10 h-10 text-[#1565C0] absolute inset-0 m-auto animate-pulse" />
             </div>
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+              <span className="text-xs font-black uppercase tracking-wider text-[#1565C0] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
                 Gemini Vision Multimodal OCR
               </span>
-              <h2 className="text-2xl font-black text-slate-900 mt-2">Deciphering Medical Prescription...</h2>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">Deciphering Medical Prescription...</h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-md mx-auto leading-relaxed">
                 Extracting active chemical salts, verifying Schedule H regulatory compliance, and cross-matching Jan Aushadhi generic availability.
               </p>
@@ -877,7 +882,7 @@ export default function PatientApp() {
             
             <div className="w-full max-w-sm space-y-2.5 text-left bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-xs">
               <div className="flex items-center gap-2.5 text-slate-700 font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping" />
                 <span>Reading handwritten dosage instructions</span>
               </div>
               <div className="flex items-center gap-2.5 text-slate-700 font-medium">
@@ -890,8 +895,8 @@ export default function PatientApp() {
               </div>
             </div>
 
-            <div className="w-64 h-2.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full animate-[shimmer_1.5s_infinite] w-3/4" />
+            <div className="w-64 h-2.5 bg-blue-100 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-[#1565C0] via-sky-400 to-teal-400 rounded-full animate-[shimmer_1.5s_infinite] w-3/4" />
             </div>
 
             <button
@@ -908,18 +913,18 @@ export default function PatientApp() {
 
         {/* ═══ 3. Parsed Prescription Card & Savings Review ═══ */}
         {parsedData && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 border border-blue-100 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
             
             {/* Stage Title with Back Button */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                  <span className="text-xs font-black uppercase tracking-wider text-emerald-700">
                     Step 2: Review Medicines &amp; Verify Economics
                   </span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">
                   Prescription Verified &amp; Price Comparison
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
@@ -941,14 +946,14 @@ export default function PatientApp() {
             </div>
 
             {/* Doctor Verification Header */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-blue-50/60 border border-blue-200">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 border border-blue-300 flex items-center justify-center text-[#1565C0] shrink-0">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-black text-slate-900">{parsedData.doctor_reg}</h4>
-                  <p className="text-[11px] text-slate-500 mt-0.5">{parsedData.prescription_date} • Schedule H Verified Doctor</p>
+                  <p className="text-[11px] text-slate-600 mt-0.5">{parsedData.prescription_date} • Schedule H Verified Doctor</p>
                 </div>
               </div>
               <span className="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full">
@@ -958,7 +963,7 @@ export default function PatientApp() {
 
             {/* Cold Chain Warning Badge */}
             {parsedData.is_cold_chain && (
-              <div className="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 text-sky-950 rounded-2xl p-4 flex items-start gap-3.5 shadow-2xs">
+              <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-300 text-sky-950 rounded-2xl p-4 flex items-start gap-3.5 shadow-2xs">
                 <div className="w-10 h-10 rounded-xl bg-sky-100 border border-sky-300 flex items-center justify-center text-sky-700 shrink-0 mt-0.5">
                   <Snowflake className="w-5 h-5 animate-pulse" />
                 </div>
@@ -980,19 +985,19 @@ export default function PatientApp() {
                 <span className="text-xs sm:text-sm font-bold text-slate-900 block">Affordable Strip Dosage:</span>
                 <span className="text-xs text-slate-500">Tier-2 loose strip support (Cut blister pack to reduce upfront out-of-pocket expenditure)</span>
               </div>
-              <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-2xs shrink-0">
+              <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-2xs shrink-0 w-full sm:w-auto">
                 <button
                   onClick={() => setIsFractional(false)}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    !isFractional ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`flex-1 sm:flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    !isFractional ? 'bg-[#1565C0] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Full 30-Day Course
                 </button>
                 <button
                   onClick={() => setIsFractional(true)}
-                  className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    isFractional ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`flex-1 sm:flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    isFractional ? 'bg-[#1565C0] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   10-Day Strip Pack
@@ -1012,14 +1017,14 @@ export default function PatientApp() {
               {parsedData.medicines.map((med) => (
                 <div 
                   key={med.id}
-                  className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 transition-colors flex flex-col gap-3"
+                  className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 shadow-xs transition-colors flex flex-col gap-3"
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div>
-                      <div className="flex items-center gap-2 font-black text-sm text-slate-900">
+                      <div className="flex flex-wrap items-center gap-2 font-black text-sm sm:text-base text-slate-900">
                         <span>{med.brand_name}</span>
                         {med.is_cold_chain && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 bg-sky-100 text-sky-800 border border-sky-200 rounded-md font-bold">
+                          <span className="text-[10px] font-mono px-2 py-0.5 bg-sky-50 text-sky-800 border border-sky-200 rounded-md font-bold">
                             ❄️ 2-8°C Cold Chain
                           </span>
                         )}
@@ -1031,7 +1036,7 @@ export default function PatientApp() {
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-base font-black text-emerald-700 font-mono">
+                      <div className="text-base sm:text-lg font-black text-emerald-700 font-mono">
                         ₹{isFractional && med.fractional_available ? Math.round(med.generic_price / 3) : med.generic_price}
                       </div>
                       <div className="text-xs text-slate-400 line-through font-mono">
@@ -1040,12 +1045,12 @@ export default function PatientApp() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <span className="text-slate-700 flex items-center gap-1.5 font-medium">
                       <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
                       Generic Equivalent: <strong className="text-slate-900 font-bold">{med.generic_substitute}</strong>
                     </span>
-                    <span className="text-emerald-800 font-black bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md text-xs">
+                    <span className="text-white font-black bg-emerald-600 px-3 py-1 rounded-xl text-xs shadow-xs">
                       Save {med.savings_percent}%
                     </span>
                   </div>
@@ -1053,17 +1058,17 @@ export default function PatientApp() {
               ))}
             </div>
 
-            {/* Total Pricing Summary Card */}
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border-2 border-emerald-300/80 flex items-center justify-between shadow-xs">
+            {/* Total Pricing Summary Card (Royal Blue Gradient Banner) */}
+            <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#1565C0] via-[#0D47A1] to-emerald-700 text-white border border-blue-400/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
               <div>
-                <span className="text-xs sm:text-sm text-slate-600 font-bold block">Total Estimated Cost (Generic):</span>
-                <span className="text-xs sm:text-sm font-black text-emerald-800">
+                <span className="text-xs sm:text-sm text-blue-100 font-bold block">Total Estimated Cost (Generic):</span>
+                <span className="text-xs sm:text-sm font-black text-amber-300">
                   🎉 Save {parsedData.total_savings_percent}% via Jan Aushadhi Substitutes
                 </span>
               </div>
               <div className="flex items-baseline gap-3 text-right">
-                <span className="text-sm line-through text-slate-400 font-mono">₹{brandCalculatedTotal}</span>
-                <span className="text-3xl font-black text-slate-900 font-mono">₹{calculatedTotal}</span>
+                <span className="text-sm line-through text-blue-200/70 font-mono">₹{brandCalculatedTotal}</span>
+                <span className="text-3xl sm:text-4xl font-black text-white font-mono">₹{calculatedTotal}</span>
               </div>
             </div>
 
@@ -1084,7 +1089,7 @@ export default function PatientApp() {
                 <button
                   onClick={handleBroadcastOrder}
                   disabled={isDispatching}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] text-white font-black py-4 px-6 rounded-2xl text-base flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/30 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-[#1565C0] via-[#0D47A1] to-emerald-600 hover:from-blue-700 hover:to-emerald-700 active:scale-[0.99] text-white font-black py-4 px-6 rounded-2xl text-base sm:text-lg flex items-center justify-center gap-3 shadow-xl shadow-blue-600/30 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <Radio className="w-5 h-5 animate-pulse" />
                   <span>{isDispatching ? 'Initiating Dispatch Ping...' : `Broadcast & Order via WhatsApp (₹${calculatedTotal})`}</span>
@@ -1094,18 +1099,18 @@ export default function PatientApp() {
                 </p>
               </div>
             ) : (
-              <div className="bg-slate-950 text-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/80 shadow-2xl flex flex-col gap-5 animate-in fade-in duration-300">
+              <div className="bg-gradient-to-br from-[#0A2540] via-[#0D47A1] to-[#1565C0] text-white rounded-3xl p-5 sm:p-8 border-2 border-cyan-400/60 shadow-2xl flex flex-col gap-5 animate-in fade-in duration-300">
                 
                 {/* 5-Min Consensus Header with Back Button */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-4 h-4 rounded-full bg-emerald-500 animate-ping shrink-0" />
+                    <div className="w-4 h-4 rounded-full bg-emerald-400 animate-ping shrink-0" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-black text-emerald-400 uppercase tracking-wider block">
+                        <span className="text-xs font-mono font-black text-cyan-300 uppercase tracking-wider block">
                           Live Network Broadcast Active
                         </span>
-                        <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/90 border border-cyan-800 px-2 py-0.5 rounded font-bold">
+                        <span className="text-[10px] font-mono text-amber-300 bg-amber-400/20 border border-amber-400/40 px-2 py-0.5 rounded font-bold">
                           Multi-Store Consensus
                         </span>
                       </div>
@@ -1118,26 +1123,26 @@ export default function PatientApp() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setFlowState('PARSED')}
-                      className="text-xs font-bold text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl transition cursor-pointer"
+                      className="text-xs font-bold text-blue-200 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1.5 rounded-xl transition cursor-pointer"
                     >
                       ← Cancel / Edit Rx
                     </button>
                     <div className="text-right">
-                      <span className="text-sm font-mono font-black text-amber-400 bg-amber-950/80 border border-amber-800 px-3.5 py-1.5 rounded-xl block shadow-xs">
+                      <span className="text-sm font-mono font-black text-amber-300 bg-amber-950/80 border border-amber-600 px-3.5 py-1.5 rounded-xl block shadow-xs">
                         ⏱️ {Math.floor(countdownSeconds / 60)}:{(countdownSeconds % 60).toString().padStart(2, '0')}
                       </span>
-                      <span className="text-[10px] text-slate-400 block mt-0.5 font-medium">Convergence Window</span>
+                      <span className="text-[10px] text-blue-200 block mt-0.5 font-medium">Convergence Window</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Explanation Banner */}
-                <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl text-xs space-y-1.5">
-                  <div className="font-black text-emerald-300 flex items-center gap-2 text-xs sm:text-sm">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                <div className="bg-black/30 backdrop-blur-md border border-white/10 p-4 rounded-2xl text-xs space-y-1.5">
+                  <div className="font-black text-cyan-300 flex items-center gap-2 text-xs sm:text-sm">
+                    <Sparkles className="w-4 h-4 text-cyan-300" />
                     How Proximity Cascading Works:
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-blue-100 leading-relaxed font-medium">
                     MediRush pings the closest pharmacy first. If a pharmacy only stocks some items, the remaining items cascade to the next closest pharmacy in real-time. Order resolves automatically at <strong>100% coverage</strong> or when timer expires.
                   </p>
                 </div>
@@ -1145,22 +1150,22 @@ export default function PatientApp() {
                 {/* Coverage Progress Bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs sm:text-sm font-bold">
-                    <span className="text-slate-300">Prescription Coverage Progress:</span>
-                    <span className={orderProgress?.coveragePercent === 100 ? 'text-emerald-400 font-mono font-black' : 'text-amber-400 font-mono font-black'}>
+                    <span className="text-blue-100">Prescription Coverage Progress:</span>
+                    <span className={orderProgress?.coveragePercent === 100 ? 'text-emerald-300 font-mono font-black' : 'text-amber-300 font-mono font-black'}>
                       {orderProgress?.coveragePercent || 0}% Secured ({orderProgress?.coveredMedsCount || 0}/{parsedData.medicines.length} items)
                     </span>
                   </div>
-                  <div className="w-full bg-slate-900 h-3.5 rounded-full overflow-hidden border border-slate-700/80">
+                  <div className="w-full bg-black/40 h-3.5 rounded-full overflow-hidden border border-white/10">
                     <div 
-                      className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500 rounded-full"
+                      className="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full transition-all duration-500 rounded-full"
                       style={{ width: `${orderProgress?.coveragePercent || 0}%` }}
                     />
                   </div>
                 </div>
 
                 {/* Live Itemized Acceptance Checklist */}
-                <div className="space-y-2.5 pt-2 border-t border-slate-800">
-                  <span className="text-xs font-black text-slate-400 uppercase tracking-wider block">
+                <div className="space-y-2.5 pt-2 border-t border-white/10">
+                  <span className="text-xs font-black text-blue-200 uppercase tracking-wider block">
                     Individual Medicine Claim Status:
                   </span>
 
@@ -1174,19 +1179,19 @@ export default function PatientApp() {
                         key={medKey}
                         className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between transition-all ${
                           isAccepted
-                            ? 'bg-emerald-950/50 border-emerald-600 text-emerald-100 shadow-xs'
-                            : 'bg-slate-900/70 border-slate-800 text-slate-400'
+                            ? 'bg-emerald-950/60 border-emerald-500 text-emerald-100 shadow-xs'
+                            : 'bg-black/30 border-white/10 text-slate-300'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-                            isAccepted ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400 animate-pulse'
+                            isAccepted ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/50 animate-pulse'
                           }`}>
                             {isAccepted ? '✓' : '⏳'}
                           </span>
                           <div>
                             <span className="font-bold text-white block text-xs sm:text-sm">{med.brand_name}</span>
-                            <span className="text-[11px] font-mono text-slate-400">
+                            <span className="text-[11px] font-mono text-blue-200">
                               Salt: {med.chemical_salt}
                             </span>
                           </div>
@@ -1198,7 +1203,7 @@ export default function PatientApp() {
                               ✓ Stock Confirmed ({coverage.confirmedBy[0]?.split(' ')[0]})
                             </span>
                           ) : (
-                            <span className="text-xs font-bold text-amber-400 bg-amber-950/80 border border-amber-800 px-2.5 py-1 rounded-md block animate-pulse">
+                            <span className="text-xs font-bold text-amber-300 bg-amber-950/80 border border-amber-800 px-2.5 py-1 rounded-md block animate-pulse">
                               Cascading to Chemist Grid...
                             </span>
                           )}
@@ -1209,12 +1214,12 @@ export default function PatientApp() {
                 </div>
 
                 {/* Proximity Distance Cascading Dispatch Ladder */}
-                <div className="space-y-2.5 pt-2 border-t border-slate-800">
+                <div className="space-y-2.5 pt-2 border-t border-white/10">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-wider block">
+                    <span className="text-xs font-black text-blue-200 uppercase tracking-wider block">
                       Proximity Dispatch Ladder (Nearest First):
                     </span>
-                    <span className="text-xs font-mono text-emerald-400 font-bold">⚡ Haversine Ranked</span>
+                    <span className="text-xs font-mono text-cyan-300 font-bold">⚡ Haversine Ranked</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1235,31 +1240,31 @@ export default function PatientApp() {
                           key={tIdx} 
                           className={`p-3 rounded-2xl border text-xs flex items-center justify-between ${
                             isSecured
-                              ? 'bg-emerald-950/50 border-emerald-600 text-emerald-200 ring-1 ring-emerald-500/30'
+                              ? 'bg-emerald-950/60 border-emerald-500 text-emerald-200'
                               : isEvaluating
-                              ? 'bg-amber-950/50 border-amber-600 text-amber-200 animate-pulse'
-                              : 'bg-slate-900/50 border-slate-800 text-slate-400'
+                              ? 'bg-amber-950/60 border-amber-500 text-amber-200 animate-pulse'
+                              : 'bg-black/30 border-white/10 text-blue-200/60'
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-xs text-slate-300 font-bold bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">
+                            <span className="font-mono text-xs text-white font-bold bg-white/10 px-2 py-0.5 rounded-lg border border-white/20">
                               #{tIdx + 1}
                             </span>
                             <div>
                               <span className="font-bold block text-white text-xs">
                                 {tier.chemistName.split(' ')[0]} {tier.chemistName.split(' ')[1] || ''}
                               </span>
-                              <span className="text-[11px] font-mono text-slate-400">
+                              <span className="text-[11px] font-mono text-blue-200">
                                 📍 {tier.distanceKm} km away
                               </span>
                             </div>
                           </div>
                           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
                             isSecured
-                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-700'
                               : isEvaluating
-                              ? 'bg-amber-950 text-amber-300 border border-amber-800'
-                              : 'bg-slate-900 text-slate-500 border border-slate-800'
+                              ? 'bg-amber-950 text-amber-300 border border-amber-700'
+                              : 'bg-white/10 text-blue-200/50 border border-white/10'
                           }`}>
                             {isSecured ? `${tier.fulfilledCount} Items Secured` : isEvaluating ? 'Evaluating...' : 'Standby'}
                           </span>
@@ -1270,11 +1275,11 @@ export default function PatientApp() {
                 </div>
 
                 {/* Force Resolve Early Button */}
-                <div className="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <span className="text-xs text-slate-400">Lock optimal route immediately without waiting:</span>
+                <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <span className="text-xs text-blue-200">Lock optimal route immediately without waiting:</span>
                   <button
                     onClick={handleForceResolve}
-                    className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs sm:text-sm px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-[0.98]"
+                    className="w-full sm:w-auto bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs sm:text-sm px-5 py-2.5 rounded-2xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-400/20 active:scale-[0.98]"
                   >
                     <Sparkles className="w-4 h-4 text-slate-950" />
                     <span>⚡ Resolve Best Route Now</span>
@@ -1287,10 +1292,10 @@ export default function PatientApp() {
 
         {/* ═══ Safety Audit Panel ═══ */}
         {safetyAudit && parsedData && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-blue-100 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
                   safetyAudit.overallStatus === 'SAFE' ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' :
                   safetyAudit.overallStatus === 'WARNING' ? 'bg-amber-50 border border-amber-200 text-amber-700' :
                   'bg-red-50 border border-red-200 text-red-700'
@@ -1302,7 +1307,7 @@ export default function PatientApp() {
                   <p className="text-xs text-slate-500">Rule-based drug interaction engine • No hallucinated clinical advice</p>
                 </div>
               </div>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+              <span className={`text-xs font-black px-3 py-1 rounded-full ${
                 safetyAudit.overallStatus === 'SAFE' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                 safetyAudit.overallStatus === 'WARNING' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                 'bg-red-100 text-red-800 border border-red-200'
@@ -1314,7 +1319,7 @@ export default function PatientApp() {
             {safetyAudit.interactions.length > 0 && (
               <div className="space-y-2">
                 {safetyAudit.interactions.map((alert, i) => (
-                  <div key={i} className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
+                  <div key={i} className={`p-3 rounded-2xl border text-xs flex items-start gap-2.5 ${
                     alert.severity === 'CRITICAL'
                       ? 'bg-red-50 border-red-200'
                       : 'bg-amber-50 border-amber-200'
@@ -1335,7 +1340,7 @@ export default function PatientApp() {
             {safetyAudit.duplicates.length > 0 && (
               <div className="space-y-2">
                 {safetyAudit.duplicates.map((dup, i) => (
-                  <div key={i} className="p-3 rounded-xl border bg-amber-50 border-amber-200 text-xs flex items-start gap-2.5">
+                  <div key={i} className="p-3 rounded-2xl border bg-amber-50 border-amber-200 text-xs flex items-start gap-2.5">
                     <Info className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-slate-900">Duplicate: {dup.salt}</span>
@@ -1359,9 +1364,9 @@ export default function PatientApp() {
 
         {/* ═══ Live Fulfillment Intelligence ═══ */}
         {rankingResults.length > 0 && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-blue-100 shadow-sm flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center">
                 <Activity className="w-5 h-5" />
               </div>
               <div>
@@ -1373,15 +1378,15 @@ export default function PatientApp() {
             <div className="space-y-2.5">
               {rankingResults.slice(0, 4).map((r, i) => (
                 <div key={r.chemistId} className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between ${
-                  i === 0 ? 'bg-emerald-50/60 border-emerald-300 ring-1 ring-emerald-500/20' : 'bg-slate-50 border-slate-200'
+                  i === 0 ? 'bg-blue-50/60 border-blue-300 ring-1 ring-blue-500/20' : 'bg-slate-50 border-slate-200'
                 }`}>
                   <div className="flex items-center gap-3">
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
-                      i === 0 ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'
+                      i === 0 ? 'bg-[#1565C0] text-white' : 'bg-slate-200 text-slate-600'
                     }`}>{i + 1}</span>
                     <div>
                       <span className="font-bold text-slate-900 block text-xs sm:text-sm">{r.chemistName}</span>
-                      <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 font-medium">
+                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-xs text-slate-500 font-medium">
                         <span>Stock: {(r.breakdown.medicineMatch * 100).toFixed(0)}%</span>
                         <span>•</span>
                         <span>Dist: {(r.breakdown.distanceScore * 100).toFixed(0)}%</span>
@@ -1393,7 +1398,7 @@ export default function PatientApp() {
                     </div>
                   </div>
                   <span className={`font-black font-mono text-base ${
-                    i === 0 ? 'text-emerald-700' : 'text-slate-700'
+                    i === 0 ? 'text-[#1565C0]' : 'text-slate-700'
                   }`}>{r.score}</span>
                 </div>
               ))}
@@ -1403,10 +1408,10 @@ export default function PatientApp() {
 
         {/* ═══ Multi-Node Pharmacy & Shadow Inventory Fulfillment Plan ═══ */}
         {fulfillmentPlan && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-blue-100 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-700 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-700 flex items-center justify-center">
                   <Database className="w-5 h-5" />
                 </div>
                 <div>
@@ -1418,7 +1423,7 @@ export default function PatientApp() {
                   </p>
                 </div>
               </div>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+              <span className={`text-xs font-black px-3 py-1 rounded-full ${
                 fulfillmentPlan.planType === 'SINGLE_NODE'
                   ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                   : fulfillmentPlan.planType === 'MULTI_NODE_SPLIT'
@@ -1467,7 +1472,7 @@ export default function PatientApp() {
                     ))}
                   </div>
 
-                  <div className="pt-2.5 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <div className="pt-2.5 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 font-mono">
                     <span>Coverage: {node.coveragePercent}%</span>
                     <span>Distance: {node.distanceScore}%</span>
                     <span>Freshness: {node.freshnessScore}%</span>
@@ -1481,10 +1486,10 @@ export default function PatientApp() {
 
         {/* ═══ Thermal Delivery Monitor ═══ */}
         {thermalSLA && thermalSLA.requiresColdChain && (flowState === 'PARSED' || flowState === 'BROADCASTING') && (
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-blue-100 shadow-sm flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center">
                   <Thermometer className="w-5 h-5" />
                 </div>
                 <div>
@@ -1492,7 +1497,7 @@ export default function PatientApp() {
                   <p className="text-xs text-slate-500">Real-time ambient weather model &amp; Ice gel safety envelope</p>
                 </div>
               </div>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+              <span className={`text-xs font-black px-3 py-1 rounded-full ${
                 thermalSLA.thermalStatus === 'WITHIN_ESTIMATED_WINDOW' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                 thermalSLA.thermalStatus === 'APPROACHING_LIMIT' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                 'bg-red-100 text-red-800 border border-red-200'
@@ -1501,7 +1506,7 @@ export default function PatientApp() {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-center">
                 <span className="text-xs text-slate-500 font-semibold block">Ambient Temp</span>
                 <span className="text-lg font-black text-slate-900 font-mono block mt-0.5">
@@ -1537,9 +1542,9 @@ export default function PatientApp() {
 
         {/* ═══ System Intelligence Dashboard ═══ */}
         {systemHealth && (
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-blue-100 shadow-sm flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#1565C0] border border-blue-200 flex items-center justify-center">
                 <Zap className="w-5 h-5" />
               </div>
               <div>
@@ -1553,7 +1558,7 @@ export default function PatientApp() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {([
                 { label: 'AI Extraction', key: 'geminiApi' as const, sub: 'Gemini Vision' },
                 { label: 'Safety Validation', key: 'safetyEngine' as const, sub: 'Deterministic Rules' },
@@ -1583,7 +1588,7 @@ export default function PatientApp() {
 
         {/* ═══ 4. Live Fulfillment & Post-Delivery Lifecycle ═══ */}
         {flowState === 'ACCEPTED' && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-2xl flex flex-col gap-6 animate-in zoom-in-95 duration-400">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 border-2 border-emerald-500 shadow-2xl flex flex-col gap-6 animate-in zoom-in-95 duration-400">
             
             {/* Header with Navigation & New Order Button */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -1607,9 +1612,9 @@ export default function PatientApp() {
               {/* Start New Prescription Button */}
               <button
                 onClick={handleResetAll}
-                className="self-start sm:self-center text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                className="self-start sm:self-center text-xs font-bold text-[#1565C0] bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
-                <RefreshCw className="w-3.5 h-3.5 text-emerald-700" />
+                <RefreshCw className="w-3.5 h-3.5 text-[#1565C0]" />
                 <span>Start New Order</span>
               </button>
             </div>
@@ -1620,10 +1625,10 @@ export default function PatientApp() {
                 ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' 
                 : deliveryStage === 'ARRIVED_DOORSTEP' 
                 ? 'bg-amber-50 border-amber-300 text-amber-950' 
-                : 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+                : 'bg-blue-50/70 border-blue-200 text-blue-950'
             }`}>
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
-                deliveryStage === 'DELIVERED' ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white'
+                deliveryStage === 'DELIVERED' ? 'bg-emerald-600 text-white' : 'bg-[#1565C0] text-white'
               }`}>
                 {deliveryStage === 'DELIVERED' ? <CheckCircle2 className="w-7 h-7 text-white" /> : <Bike className="w-6 h-6 text-white" />}
               </div>
@@ -1640,28 +1645,28 @@ export default function PatientApp() {
             </div>
 
             {/* Delivery Progression Stepper */}
-            <div className="grid grid-cols-4 gap-2 py-2 border-y border-slate-100 text-center text-xs">
-              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-50/70 border border-emerald-200">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 border-y border-slate-100 text-center text-xs">
+              <div className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
                 <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[11px] font-bold">✓</span>
                 <span className="font-bold text-slate-800 text-[11px]">Rx Verified</span>
               </div>
-              <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-50/70 border border-emerald-200">
+              <div className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
                 <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[11px] font-bold">✓</span>
                 <span className="font-bold text-slate-800 text-[11px]">Ice Gel Sealed</span>
               </div>
-              <div className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border ${
+              <div className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border ${
                 deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' 
                   ? 'bg-emerald-50/70 border-emerald-200' 
-                  : 'bg-emerald-100/80 border-emerald-300 ring-2 ring-emerald-500/20'
+                  : 'bg-blue-50 border-blue-300 ring-2 ring-blue-500/20'
               }`}>
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${
-                  deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white animate-pulse'
+                  deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' ? 'bg-emerald-600 text-white' : 'bg-[#1565C0] text-white animate-pulse'
                 }`}>
                   {deliveryStage === 'DELIVERED' || deliveryStage === 'ARRIVED_DOORSTEP' ? '✓' : '🛵'}
                 </span>
                 <span className="font-bold text-slate-800 text-[11px]">Out for Delivery</span>
               </div>
-              <div className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border ${
+              <div className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border ${
                 deliveryStage === 'DELIVERED' 
                   ? 'bg-emerald-100 border-emerald-300 text-emerald-900 font-black' 
                   : 'bg-slate-50 border-slate-200 text-slate-400'
@@ -1751,7 +1756,7 @@ export default function PatientApp() {
                   </button>
                   <button
                     onClick={handleResetAll}
-                    className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                    className="flex-1 sm:flex-none bg-[#1565C0] hover:bg-blue-700 text-white font-black text-xs px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
                   >
                     <span>Order Again</span>
                     <ArrowRight className="w-4 h-4" />
@@ -1763,7 +1768,7 @@ export default function PatientApp() {
             {/* Delivery Agent Card */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
+                <div className="w-12 h-12 rounded-full bg-[#1565C0] text-white flex items-center justify-center font-bold text-sm shadow-md">
                   <Bike className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -1778,7 +1783,7 @@ export default function PatientApp() {
                   href="tel:+919826154321"
                   className="text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-2xs"
                 >
-                  <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                  <Phone className="w-3.5 h-3.5 text-[#1565C0]" />
                   <span>Call Rider</span>
                 </a>
                 <div className="text-right pl-2">
@@ -1829,7 +1834,7 @@ export default function PatientApp() {
             )}
 
             {/* Thermal Seal Verification Badge */}
-            <div className="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 text-sky-950 rounded-2xl p-4 flex items-center gap-3.5">
+            <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 text-sky-950 rounded-2xl p-4 flex items-center gap-3.5">
               <ThermometerSnowflake className="w-6 h-6 text-sky-600 shrink-0 animate-spin" style={{ animationDuration: '6s' }} />
               <div className="text-xs">
                 <span className="font-black block text-xs sm:text-sm">Thermal Seal Active (2°C - 8°C Monitored)</span>
